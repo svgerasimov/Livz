@@ -20,7 +20,9 @@ export const Screen: React.FC<ScreenProps> = ({children, style, Header}) => (
     {/* <SafeAreaView
       style={[styles.screen, {backgroundColor: Colors.white}, style]}> */}
     {Header}
-    <View style={[styles.view, style]}>{children}</View>
+    <View style={[styles.view, {backgroundColor: Colors.white}, style]}>
+      {children}
+    </View>
     {/* </SafeAreaView> */}
   </>
 );

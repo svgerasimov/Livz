@@ -42,6 +42,7 @@ const colors = {
   whitesmoke: '#EFF2F5',
   darkslategray: '#353A40',
   lightdarkslategray: '#525252',
+  error: 'red',
 };
 
 export default colors;

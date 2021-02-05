@@ -1,5 +1,6 @@
 import {StyleSheet} from 'react-native';
-import {Fonts, Colors} from './index';
+import Fonts from './fonts';
+import Colors from './colors';
 
 const styles = StyleSheet.create({
   centered: {
@@ -10,6 +11,10 @@ const styles = StyleSheet.create({
   title: {
     fontSize: Fonts.size.title,
     color: Colors.title,
+  },
+  text: {
+    fontSize: Fonts.size.regular,
+    color: Colors.text,
   },
 });
 

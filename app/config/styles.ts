@@ -1,21 +1,19 @@
 import {StyleSheet} from 'react-native';
-import Fonts from './fonts';
-import Colors from './colors';
+import {size} from './fonts';
+import {Colors} from './colors';
 
-const styles = StyleSheet.create({
+export const globalStyles = StyleSheet.create({
   centered: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
   title: {
-    fontSize: Fonts.size.title,
+    fontSize: size.title,
     color: Colors.title,
   },
   text: {
-    fontSize: Fonts.size.regular,
+    fontSize: size.regular,
     color: Colors.text,
   },
 });
-
-export default styles;

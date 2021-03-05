@@ -2,11 +2,12 @@ import React from 'react';
 import {View, Alert, Text, StyleSheet} from 'react-native';
 
 import {Button, Screen, AuthHeader} from '../components';
-import {Colors, Fonts} from '../config';
+import {Colors, size} from '../config';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RouteProp} from '@react-navigation/native';
 import {AuthStackParamList} from '../navigation/AuthNavigator';
 import {Routes} from '../navigation/routes';
+import {useActions} from '../hooks';
 
 type WelcomeScreenNavigationProp = StackNavigationProp<
   AuthStackParamList,
@@ -23,12 +24,13 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
   navigation,
   route,
 }) => {
+  const {login} = useActions();
   return (
     <Screen Header={<AuthHeader />} style={styles.screen}>
       <View style={styles.textContainer}>
         <Text style={styles.title}>Добро пожаловать</Text>
         <Text style={styles.subtitle}>
-          Если Вы здесь впервые предлагаем зарегестрироваться
+          если Вы здесь впервые предлагаем зарегистрироваться
         </Text>
       </View>
       <Button
@@ -47,7 +49,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
       />
       <Button
         type="clear"
-        onPress={() => Alert.alert('Войти без регистрации')}
+        onPress={login}
         title="Войти без регистрации"
         titleStyle={styles.clearButtonTitle}
         buttonStyle={styles.clearButton}
@@ -67,12 +69,12 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   title: {
-    fontSize: Fonts.size.title,
+    fontSize: size.title,
     marginBottom: 8,
     textAlign: 'center',
   },
   subtitle: {
-    fontSize: Fonts.size.subTitle,
+    fontSize: size.subTitle,
     color: Colors.subTitle,
     textAlign: 'center',
   },

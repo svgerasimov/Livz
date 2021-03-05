@@ -1,0 +1,1 @@
+export {apartments} from './apartments';

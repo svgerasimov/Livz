@@ -1,6 +1,23 @@
-import {StyleSheet} from 'react-native';
+import {StyleSheet, Dimensions} from 'react-native';
 
-const metrics = {
+const {width} = Dimensions.get('window');
+
+export const rem =
+  width < 325
+    ? 12
+    : width < 380
+    ? 14
+    : width < 560
+    ? 15
+    : width < 768
+    ? 17
+    : width < 3000
+    ? 22
+    : 22;
+
+export const rems = Array.from({length: 500}, (_, i) => `${i / rem}rem`);
+
+export const Metrics = {
   authHeaderHeightPercentage: 17.6,
   navBarHeight: 20,
 
@@ -22,5 +39,3 @@ const metrics = {
   spaceMedium: 8,
   spaceBig: 16,
 };
-
-export default metrics;

@@ -21,11 +21,7 @@ export const InputField: React.FC<InputFieldType> = (props) => {
   };
 
   const getBorderColor = () =>
-    hasError
-      ? Colors.error
-      : isActive
-      ? Colors.darkslategray
-      : Colors.lightGray;
+    hasError ? Colors.error : isActive ? Colors.primaryColor : Colors.lightGray;
 
   return (
     <Input
@@ -65,7 +61,7 @@ const styles = StyleSheet.create({
     color: Colors.error,
   },
   inputContainer: {
-    borderWidth: StyleSheet.hairlineWidth,
+    borderWidth: 1,
     borderRadius: 4,
   },
 });

@@ -11,22 +11,25 @@ import {
   TouchableNativeFeedback,
   ActivityIndicator,
 } from 'react-native';
-import {Colors, Fonts, Metrics} from '../config';
+import {Colors, size, Metrics} from '../config';
 
 type ViewProps = StyleProp<ViewStyle>;
 type TextProps = StyleProp<TextStyle>;
 
 interface ButtonProps extends RNButtonProps {
-  buttonStyle?: ViewProps;
+  buttonStyle?: any;
   titleStyle?: TextProps;
   type?: 'solid' | 'clear' | 'outline';
   leftIcon?: React.ReactNode;
+  rightIcon?: React.ReactNode;
   loading?: boolean;
+  color?: 'dark' | 'green' | 'smoke';
 }
 
 export const Button: React.FC<ButtonProps> = ({
   loading = false,
-  leftIcon = undefined,
+  leftIcon = null,
+  rightIcon = null,
   title = '',
   onPress = () => {},
   color = 'green',
@@ -74,7 +77,7 @@ export const Button: React.FC<ButtonProps> = ({
 
   return (
     <TouchableOpacity
-      activeOpacity={0.5}
+      activeOpacity={0.8}
       style={[styles.button, customButtonStyles, buttonStyle]}
       {...otherProps}
       onPress={onPress}>
@@ -86,10 +89,12 @@ export const Button: React.FC<ButtonProps> = ({
               styles.text,
               customTitleStyles,
               titleStyle,
-              !!leftIcon && {marginLeft: 14},
+              !!leftIcon && {marginLeft: 10},
+              !!rightIcon && {marginRight: 10},
             ]}>
             {title}
           </Text>
+          {rightIcon}
         </>
       ) : (
         <ActivityIndicator
@@ -115,6 +120,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   text: {
-    fontSize: Fonts.size.btnText,
+    fontSize: size.btnText,
   },
 });

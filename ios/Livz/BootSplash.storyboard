@@ -16,11 +16,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <imageView autoresizesSubviews="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" image="LaunchScreen" translatesAutoresizingMaskIntoConstraints="NO" id="3lX-Ut-9ad">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="LaunchScreen" translatesAutoresizingMaskIntoConstraints="NO" id="feq-Bd-nlM">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                                <accessibility key="accessibilityConfiguration">
-                                    <accessibilityTraits key="traits" image="YES" notEnabled="YES"/>
-                                </accessibility>
                             </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="Bcu-3y-fUS"/>
@@ -29,10 +26,10 @@
                             <accessibilityTraits key="traits" notEnabled="YES"/>
                         </accessibility>
                         <constraints>
-                            <constraint firstItem="3lX-Ut-9ad" firstAttribute="top" secondItem="Bcu-3y-fUS" secondAttribute="top" id="IRp-8E-dY4"/>
-                            <constraint firstItem="3lX-Ut-9ad" firstAttribute="bottom" secondItem="Bcu-3y-fUS" secondAttribute="bottom" id="P4j-4k-WbI"/>
-                            <constraint firstAttribute="trailing" secondItem="3lX-Ut-9ad" secondAttribute="trailing" id="SjR-52-oad"/>
-                            <constraint firstItem="3lX-Ut-9ad" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="uV7-CF-xm8"/>
+                            <constraint firstItem="feq-Bd-nlM" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="2Yp-7e-0Gj"/>
+                            <constraint firstAttribute="bottom" secondItem="feq-Bd-nlM" secondAttribute="bottom" id="HXV-bg-TRY"/>
+                            <constraint firstItem="feq-Bd-nlM" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="top" id="SWI-Xs-QFS"/>
+                            <constraint firstAttribute="trailing" secondItem="feq-Bd-nlM" secondAttribute="trailing" id="vpD-Fe-0fn"/>
                         </constraints>
                     </view>
                 </viewController>
@@ -42,6 +39,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="LaunchScreen" width="240.5" height="320"/>
+        <image name="LaunchScreen" width="310.5" height="609"/>
     </resources>
 </document>

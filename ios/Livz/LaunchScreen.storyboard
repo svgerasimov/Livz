@@ -12,11 +12,22 @@
         <scene sceneID="EHf-IW-A2E">
             <objects>
                 <viewController id="01J-lp-oVM" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="Ze5-6b-2t3">
+                    <view key="view" contentMode="scaleAspectFill" preservesSuperviewLayoutMargins="YES" id="Ze5-6b-2t3">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <viewLayoutGuide key="safeArea" id="Bcu-3y-fUS"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="LaunchScreen" translatesAutoresizingMaskIntoConstraints="NO" id="6Yy-KF-m7o">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                            </imageView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="JMb-iO-DeV"/>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="6Yy-KF-m7o" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="7Z2-uX-n9T"/>
+                            <constraint firstAttribute="trailing" secondItem="6Yy-KF-m7o" secondAttribute="trailing" id="9Ua-j0-gzf"/>
+                            <constraint firstItem="6Yy-KF-m7o" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="top" id="R9K-Mz-oR9"/>
+                            <constraint firstAttribute="bottom" secondItem="6Yy-KF-m7o" secondAttribute="bottom" id="ZC9-bk-zSP"/>
+                        </constraints>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iYj-Kq-Ea1" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -24,4 +35,7 @@
             <point key="canvasLocation" x="52" y="374.66266866566718"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="LaunchScreen" width="310.5" height="609"/>
+    </resources>
 </document>

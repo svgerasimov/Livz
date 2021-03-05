@@ -1,4 +1,4 @@
-const primary = {
+export const primary = {
   base: 'Helvetica',
   get regular() {
     return `${this.base}-Regular`;
@@ -14,7 +14,7 @@ const primary = {
   },
 };
 
-const size = {
+export const size = {
   get title() {
     return this.veryBig;
   },
@@ -40,9 +40,4 @@ const size = {
   get inputFieldLabel() {
     return this.system;
   },
-};
-
-export default {
-  primary,
-  size,
 };

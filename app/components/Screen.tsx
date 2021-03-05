@@ -11,29 +11,23 @@ import {Colors} from '../config';
 
 interface ScreenProps {
   style?: StyleProp<ViewStyle>;
-  Header?: React.ReactNode;
+  Header?: any;
 }
 
 export const Screen: React.FC<ScreenProps> = ({children, style, Header}) => (
   <>
     <StatusBar barStyle="light-content" />
-    {/* <SafeAreaView
-      style={[styles.screen, {backgroundColor: Colors.white}, style]}> */}
     {Header}
-    <View style={[styles.view, {backgroundColor: Colors.white}, style]}>
-      {children}
-    </View>
-    {/* </SafeAreaView> */}
+    <SafeAreaView style={styles.screen}>
+      <View style={[styles.view, style]}>{children}</View>
+    </SafeAreaView>
   </>
 );
-Screen.defaultProps = {
-  Header: undefined,
-};
 
 const styles = StyleSheet.create({
   screen: {
-    // paddingTop: 80,
     flex: 1,
+    backgroundColor: Colors.white,
   },
   view: {
     flex: 1,

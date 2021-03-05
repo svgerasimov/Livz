@@ -20,6 +20,7 @@
 		32F13A334BB6006E3981D84D /* libPods-Livz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 07333BC019230093F4BB0973 /* libPods-Livz.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		841BB7F425C85BB800D8EBC6 /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 841BB7F325C85BB800D8EBC6 /* BootSplash.storyboard */; };
+		841F7A3D25EFE7CE007CF544 /* fonts in Resources */ = {isa = PBXBuildFile; fileRef = 841F7A3C25EFE7CE007CF544 /* fonts */; };
 		88B617D199B96F691EF77394 /* libPods-Livz-LivzTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3F6BCE008B9E6140FBF3A892 /* libPods-Livz-LivzTests.a */; };
 /* End PBXBuildFile section */
 
@@ -62,6 +63,7 @@
 		8179CB74D21C42EE6F09046A /* libPods-Livz-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Livz-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = Livz/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		841BB7F325C85BB800D8EBC6 /* BootSplash.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = BootSplash.storyboard; path = Livz/BootSplash.storyboard; sourceTree = "<group>"; };
+		841F7A3C25EFE7CE007CF544 /* fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; path = fonts; sourceTree = "<group>"; };
 		8944D55BB48C0CFEEF2FBC14 /* Pods-Livz-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Livz-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-Livz-tvOSTests/Pods-Livz-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
 		9AB2520AA86EA9F8B4F688F1 /* Pods-Livz.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Livz.debug.xcconfig"; path = "Target Support Files/Pods-Livz/Pods-Livz.debug.xcconfig"; sourceTree = "<group>"; };
 		AE9191959FE46899B9DB8D97 /* Pods-Livz-LivzTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Livz-LivzTests.release.xcconfig"; path = "Target Support Files/Pods-Livz-LivzTests/Pods-Livz-LivzTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -177,6 +179,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				841F7A3C25EFE7CE007CF544 /* fonts */,
 				13B07FAE1A68108700A75B9A /* Livz */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* LivzTests */,
@@ -202,12 +205,11 @@
 			sourceTree = "<group>";
 		};
 		B5E525BDA6F5482BBBD83C55 /* Resources */ = {
-			isa = "PBXGroup";
+			isa = PBXGroup;
 			children = (
 			);
 			name = Resources;
 			sourceTree = "<group>";
-			path = "";
 		};
 /* End PBXGroup section */
 
@@ -304,9 +306,11 @@
 				TargetAttributes = {
 					00E356ED1AD99517003FC87E = {
 						CreatedOnToolsVersion = 6.2;
+						DevelopmentTeam = 4B8FH7LH3S;
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
+						DevelopmentTeam = 4B8FH7LH3S;
 						LastSwiftMigration = 1120;
 					};
 					2D02E47A1E0B4A5D006451C7 = {
@@ -356,6 +360,7 @@
 				841BB7F425C85BB800D8EBC6 /* BootSplash.storyboard in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				841F7A3D25EFE7CE007CF544 /* fonts in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -725,6 +730,7 @@
 			baseConfigurationReference = 21F9573B2A8C675CE4385D27 /* Pods-Livz-LivzTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = 4B8FH7LH3S;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -749,6 +755,7 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = 4B8FH7LH3S;
 				INFOPLIST_FILE = LivzTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -770,6 +777,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 4B8FH7LH3S;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Livz/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -793,6 +801,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 4B8FH7LH3S;
 				INFOPLIST_FILE = Livz/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (

@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import { Text, View, TouchableOpacity} from 'react-native';
 import {Screen, Separator} from '../components';
 import {SearchIcon, TrashIcon} from '../components/svg/icons';
 import {rems} from '../config';
@@ -7,26 +7,31 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import Swipeout from 'react-native-swipeout';
 import moment from 'moment';
 import 'moment/locale/ru';
-import {TouchableOpacity} from 'react-native-gesture-handler';
 
-const ListItem = () => (
+const ListItem = ({text = '', Icon}) => (
   <>
     <View
       style={{
         flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: 'space-between',
         padding: 20,
-        paddingRight: 40,
+        // paddingRight: 40,
       }}>
-      <View style={styles.iconContainer}>
-        <SearchIcon width={14} height={14} color="white" />
-      </View>
+      <View style={[styles.iconContainer]}>{Icon}</View>
       <View
         style={{
-          paddingLeft: 10,
+          marginLeft: 10,
+          flex: 1,
         }}>
-        <Text style={{fontSize: 16, color: '#171B22', marginBottom: 5}}>
-          Мы подобрали подходящие объявления для Вас
+        <Text
+          style={{
+            fontSize: 16,
+            color: '#171B22',
+            marginBottom: 5,
+            paddingRight: 10,
+          }}>
+          {text}
         </Text>
         <Text
           style={{
@@ -38,6 +43,7 @@ const ListItem = () => (
       </View>
       <View
         style={{
+          // flex: 1,
           height: 6,
           width: 6,
           borderRadius: 3,
@@ -46,11 +52,6 @@ const ListItem = () => (
       />
     </View>
     <Separator />
-
-    {/* <View style={{
-      height: 1,
-      backgroundColor: ''
-    }} /> */}
   </>
 );
 
@@ -67,12 +68,28 @@ const SwipeOutButton = () => (
 );
 
 export const NotificationsScreen = () => {
+  const [notifications, setNotifications] = React.useState([
+    {
+      text: 'Мы подобрали подходящие объявления для Вас',
+      Icon: <SearchIcon width={14} height={14} color="white" />,
+    },
+    {
+      text: 'Ваше объявление заблокировано',
+      Icon: <SearchIcon width={14} height={14} color="white" />,
+    },
+  ]);
   const swipeoutBtns = [{component: <SwipeOutButton />}];
   return (
     <Screen>
-      <Swipeout backgroundColor="white" right={swipeoutBtns}>
-        <ListItem />
-      </Swipeout>
+      {notifications.map((n, i) => {
+        return (
+          <Swipeout onClose={(sectionID, rowId, direction) => {
+console.log(sectionID, rowId, direction)
+          }} backgroundColor="white" right={swipeoutBtns}>
+            <ListItem key={i} text={n.text} Icon={n.Icon} />
+          </Swipeout>
+        );
+      })}
     </Screen>
   );
 };

@@ -87,11 +87,11 @@ const NEWS: Category[] = [
 
 export const FeedScreen = () => {
   const {fetchAdverts} = useActions();
-  const {error, loading} = useTypedSelector((state) => state.advertisements);
+  const {error, loading, data} = useTypedSelector((state) => state.advertisements);
   const [isModalVisible, setModalVisible] = useState(false);
   // const adverts = useTypedSelector(getFilteredAdverts);
 
-  const adverts = useTypedSelector((state) => state.advertisements.data);
+  // const adverts = useTypedSelector((state) => state.advertisements.data);
   const FlatListItem = ({item, containerStyle = {}, titleStyle = {}}: any) => (
     <View style={[styles.cardContainer, containerStyle]}>
       <ImageBackground style={{flex: 1}} resizeMode="cover" source={item.image}>
@@ -123,7 +123,7 @@ export const FeedScreen = () => {
         </View>
       )}
 
-      {!error && !loading && (
+      {!error && !loading && !!data &&(
         <ScrollView
           showsVerticalScrollIndicator={false}
           bounces={false}
@@ -325,7 +325,7 @@ export const FeedScreen = () => {
                 alwaysBounceHorizontal={false}
                 showsHorizontalScrollIndicator={false}
                 horizontal
-                data={Object.keys(adverts)}
+                data={Object.keys(data)}
                 renderItem={({item}) => (
                   <View style={styles.advertCard}>
                     <AdvertCard id={item} />

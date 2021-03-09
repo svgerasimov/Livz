@@ -613,7 +613,7 @@ export const AdvertScreen: React.FC<AdvertScreenProps> = ({
               <View style={{marginRight: 16}}>
                 <WalletIcon />
               </View>
-              <Text style={styles.mortgageBrokerButtonTitle}>
+              <Text style={[styles.mortgageBrokerButtonTitle, {flex: 1, flexWrap: 'wrap'}]}>
                 Помощь ипотечного брокера
               </Text>
             </TouchableOpacity>

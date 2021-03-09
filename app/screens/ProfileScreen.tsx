@@ -159,7 +159,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
             <View style={{flexDirection: 'row'}}>
               <Button
                 titleStyle={{fontSize: 12}}
-                buttonStyle={{width: 141, height: 36}}
+                buttonStyle={[styles.editBtn, {height: 36}]}
                 color="dark"
                 title="Редактировать"
                 onPress={() => {
@@ -168,7 +168,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
               />
               <Button
                 titleStyle={{fontSize: 12}}
-                buttonStyle={{width: 100, height: 36, marginLeft: 10}}
+                buttonStyle={[styles.signOutBtn, {height: 36, marginLeft: 8}]}
                 color="smoke"
                 title="Выход"
                 onPress={logout}
@@ -207,7 +207,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
               flexDirection: 'row',
               alignItems: 'center',
               padding: 20,
-              backgroundColor: '#F4F7FB',
+              // backgroundColor: '#F4F7FB',
             }}>
             <View style={{marginRight: 13}}>
               <RingIcon />
@@ -257,4 +257,10 @@ const styles = EStyleSheet.create({
   inActiveTabbarTitle: {
     color: '#979BA2',
   },
+  signOutBtn: {
+    width: rems[90]
+  },
+  editBtn: {
+    width: rems[130]
+  }
 });

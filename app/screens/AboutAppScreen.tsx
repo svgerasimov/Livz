@@ -64,7 +64,7 @@ export const AboutAppScreen: React.FC<AboutAppScreenProps> = ({navigation}) => {
             flexDirection: 'row',
             alignItems: 'center',
             padding: 20,
-            backgroundColor: '#F4F7FB',
+            // backgroundColor: '#F4F7FB',
           }}>
           <Text style={{fontSize: 15, color: '#4F5154'}}>
             Сайт разработчика
@@ -84,22 +84,6 @@ export const AboutAppScreen: React.FC<AboutAppScreenProps> = ({navigation}) => {
           <Text style={{fontSize: 15, color: '#4F5154'}}>Версия</Text>
           <Text style={{color: '#A1A1A1', fontSize: 14}}>1.001</Text>
         </TouchableOpacity>
-        {/* <View
-            style={{
-              borderBottomWidth: 1,
-              borderColor: '#E7EAF0',
-              flexDirection: 'row',
-              alignItems: 'center',
-              padding: 20,
-              backgroundColor: '#F4F7FB',
-            }}>
-            <View style={{marginRight: 13}}>
-              <RingIcon />
-            </View>
-            <Text style={{fontSize: 15, color: '#4F5154'}}>
-              Настройка уведомлений
-            </Text>
-          </View> */}
       </View>
     </Screen>
   );

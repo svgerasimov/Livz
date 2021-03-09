@@ -20,7 +20,7 @@ export function NotificationsStack() {
         name={Routes.NOTIFICATIONS}
         component={NotificationsScreen}
         options={{
-          title: 'Уведомления (5)',
+          title: 'Уведомления (2)',
           header: (props) => (
             <Header
               // leftButton={

@@ -66,15 +66,18 @@ export const HelpScreen = ({navigation}) => {
               lineHeight: 23,
               color: '#171B22',
               paddingLeft: 11,
+              paddingRight: 10,
+              flex: 1, 
+              flexWrap: 'wrap'
             }}>
             Как добавить объект в каталог?
           </Text>
           <View
             style={{
-              flexGrow: 1,
-              alignSelf: 'auto',
-              justifyContent: 'flex-end',
-              alignItems: 'flex-end',
+              // flexGrow: 1,
+              // alignSelf: 'auto',
+              // justifyContent: 'flex-end',
+              // alignItems: 'flex-end',
               //   paddingTop: 3
             }}>
             {isHowToAddObjectCollapsed ? (
@@ -120,15 +123,18 @@ export const HelpScreen = ({navigation}) => {
               lineHeight: 23,
               color: '#171B22',
               paddingLeft: 11,
+              paddingRight: 10,
+              flex: 1, 
+              flexWrap: 'wrap'
             }}>
             Я добавил объявление но его нет в каталоге
           </Text>
           <View
             style={{
-              flexGrow: 1,
-              alignSelf: 'auto',
-              justifyContent: 'flex-end',
-              alignItems: 'flex-end',
+              // flexGrow: 1,
+              // alignSelf: 'auto',
+              // justifyContent: 'flex-end',
+              // alignItems: 'flex-end',
             }}>
             {isIAddedAdvertCollapsed ? (
               <ArrowDownIcon color="#65AB3E" width={15} height={15} />
@@ -170,15 +176,18 @@ export const HelpScreen = ({navigation}) => {
               lineHeight: 23,
               color: '#171B22',
               paddingLeft: 11,
+              paddingRight: 10,
+              flex: 1, 
+              flexWrap: 'wrap'
             }}>
-            Не получается зарегестрироваться в приложении?
+            Не получается зарегестрироваться в приложенииsdfsdfsdasdasdasdasdasdass?
           </Text>
           <View
             style={{
-              flexGrow: 1,
-              alignSelf: 'auto',
-              justifyContent: 'flex-end',
-              alignItems: 'flex-end',
+              // flexGrow: 1,
+              // alignSelf: 'auto',
+              // justifyContent: 'flex-end',
+              // alignItems: 'flex-end',
               //   paddingTop: 3
             }}>
             {/* <ArrowDownIcon onPress={() => {

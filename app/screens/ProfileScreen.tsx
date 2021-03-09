@@ -163,7 +163,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                 color="dark"
                 title="Редактировать"
                 onPress={() => {
-                  navigation.navigate(Routes.EDIT_PROFILE);
+                  // navigation.navigate(Routes.EDIT_PROFILE);
                 }}
               />
               <Button

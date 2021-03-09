@@ -6,6 +6,7 @@ import {
   NotificationsScreen,
   ProfileScreen,
 } from '../screens';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import {SearchIcon} from '../components/svg/icons/Search';
 import {NotificationIcon} from '../components/svg/icons/Notification';
@@ -28,13 +29,16 @@ const TouchableHeartIcon = withTouchable(HeartIcon);
 const Tab = createMaterialBottomTabNavigator();
 
 export const AppNavigator = () => {
+  const insets = useSafeAreaInsets();
   return (
     <Tab.Navigator
+
       initialRouteName={Routes.PROFILE}
       activeColor={Colors.activeTabbarIconColor}
       labeled={false}
       inactiveColor={Colors.inactiveTabbarIconColor}
-      barStyle={styles.barStyle}>
+      barStyle={[styles.barStyle]}
+      >
       <Tab.Screen
         options={{
           tabBarIcon: ({color}) => {
@@ -87,7 +91,8 @@ export const AppNavigator = () => {
 const styles = EStyleSheet.create({
   barStyle: {
     backgroundColor: Colors.white,
-    height: '3.57rem',
+    // height: '4rem',
+    // paddingBottom: 10
     // justifyContent: 'center',
   },
 });

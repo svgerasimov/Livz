@@ -22,8 +22,8 @@ interface ScreenProps {
 const roles = ['Агент', 'Собственник'] as const;
 
 export const WhoAddAdvertScreen: React.FC<ScreenProps> = ({navigation}) => {
-  const [role, setRole] = useState<typeof roles[number]>(roles[0]);
-  const [roleIndex, setRoleIndex] = useState(0);
+  const [role, setRole] = useState<typeof roles[number]>(null);
+  const [roleIndex, setRoleIndex] = useState();
 
   return (
     <Screen style={styles.screen}>
@@ -37,15 +37,9 @@ export const WhoAddAdvertScreen: React.FC<ScreenProps> = ({navigation}) => {
           onPress={(selectedIndex) => {
             setRoleIndex(selectedIndex);
             setRole(roles[selectedIndex]);
+            navigation.navigate(Routes.HOWTOADDADVERT)
           }}
           selectedIndex={roleIndex}
-        />
-      </Row>
-      <Row style={[styles.row]}>
-        <Button
-          buttonStyle={{}}
-          title="Далее"
-          onPress={() => navigation.navigate(Routes.HOWTOADDADVERT)}
         />
       </Row>
     </Screen>

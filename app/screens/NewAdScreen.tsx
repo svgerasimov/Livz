@@ -36,7 +36,9 @@ import {
   AddIcon,
   FavoritesIcon,
   FlatPlusIcon,
+  CloseIcon,
 } from '../components/svg/icons';
+import Modal from 'react-native-modal';
 import {
   FlatList,
   ScrollView,
@@ -63,6 +65,13 @@ export const NewAdScreen = () => {
     maxInterest: 10,
     interest: 0,
   });
+  const [stations, setStations] = useState(1);
+
+  const [isModalVisible, setModalVisible] = useState(false);
+
+  const toggleModal = () => {
+    setModalVisible(!isModalVisible);
+  };
 
   const selectTerraceHandler = (selectedIndex: number) => {
     setSelectedTerraceIndex(selectedIndex);
@@ -100,10 +109,6 @@ export const NewAdScreen = () => {
     });
   };
 
-  React.useEffect(() => {
-    console.log(livingArea);
-  }, [livingArea]);
-
   const _renderPhoto = ({item}: any) => (
     <FastImage
       key={item}
@@ -117,8 +122,10 @@ export const NewAdScreen = () => {
 
   const _renderProfit = () => {
     // (+state.price * (sliderValues.interest / 100)).toFixed(2)
+  
     if (!!state.price) {
-      return (+state.price * (sliderValues.interest / 100)).toFixed(2);
+
+      return +state.price + Number((+state.price * (sliderValues.interest / 100)).toFixed(2))
     }
     return 0;
   };
@@ -204,67 +211,77 @@ export const NewAdScreen = () => {
             placeholder="Выберите город"
           />
         </Row>
-        <Row style={styles.row}>
-          <PickerSelect
-            item={state.subwayStation}
-            data={allSubwayStations.map((option) => ({
-              label: option,
-              value: option,
-            }))}
-            label="Метро"
-            onValueChanged={(value) => {
-              dispatch({
-                type: ActionType.SELECT_SUBWAY_STATION,
-                payload: value,
-              });
-            }}
-            placeholder="Выберите метро"
-          />
-        </Row>
-        <Row style={styles.row}>
-          <View style={styles.container}>
-            <View
-              style={{
-                width: '30%',
-                justifyContent: 'space-between',
-              }}>
-              <Text style={[styles.label, {flex: 1}]}>Минут до метро</Text>
-              <View style={[styles.textInputContainer]}>
-                <TextInput
-                  style={styles.textInput}
-                  value={state.timeToSubwayStation}
-                  onChangeText={(value) =>
-                    dispatch({
-                      type: ActionType.SET_TIME_TO_SUBWAY,
-                      payload: value,
-                    })
-                  }
-                  placeholder="5"
-                  // placeholderTextColor="#373A3F"
-                  textAlign="left"
-                />
-              </View>
-            </View>
+        <View>
+          {Array.from({length: stations}, (_, i) => {
+            return (
+              <>
+                <Row style={styles.row}>
+                  <PickerSelect
+                    item={state.subwayStation}
+                    data={allSubwayStations.map((option) => ({
+                      label: option,
+                      value: option,
+                    }))}
+                    label="Метро"
+                    onValueChanged={(value) => {
+                      dispatch({
+                        type: ActionType.SELECT_SUBWAY_STATION,
+                        payload: value,
+                      });
+                    }}
+                    placeholder="Выберите метро"
+                  />
+                </Row>
+                <Row style={styles.row}>
+                  <View style={styles.container}>
+                    <View
+                      style={{
+                        width: '30%',
+                        justifyContent: 'space-between',
+                      }}>
+                      <Text style={[styles.label, {flex: 1}]}>
+                        Минут до метро
+                      </Text>
+                      <View style={[styles.textInputContainer]}>
+                        <TextInput
+                          style={styles.textInput}
+                          value={state.timeToSubwayStation}
+                          onChangeText={(value) =>
+                            dispatch({
+                              type: ActionType.SET_TIME_TO_SUBWAY,
+                              payload: value,
+                            })
+                          }
+                          placeholder="5"
+                          // placeholderTextColor="#373A3F"
+                          textAlign="left"
+                        />
+                      </View>
+                    </View>
 
-            <View style={{width: '70%', paddingLeft: 40}}>
-              <PickerSelect
-                item={state.modeToSubwayStation}
-                data={modesToSubwayStation.map((option) => ({
-                  label: option,
-                  value: option,
-                }))}
-                label="Пешком/Транспорт"
-                onValueChanged={(value) => {
-                  dispatch({
-                    type: ActionType.SET_MODE_TO_SUBWAY,
-                    payload: value,
-                  });
-                }}
-                placeholder="Выберите способ до метро"
-              />
-            </View>
-          </View>
-        </Row>
+                    <View style={{width: '70%', paddingLeft: 40}}>
+                      <PickerSelect
+                        item={state.modeToSubwayStation}
+                        data={modesToSubwayStation.map((option) => ({
+                          label: option,
+                          value: option,
+                        }))}
+                        label="Пешком/Транспорт"
+                        onValueChanged={(value) => {
+                          dispatch({
+                            type: ActionType.SET_MODE_TO_SUBWAY,
+                            payload: value,
+                          });
+                        }}
+                        placeholder="Выберите способ до метро"
+                      />
+                    </View>
+                  </View>
+                </Row>
+              </>
+            );
+          })}
+        </View>
 
         <Row style={styles.row}>
           <Button
@@ -277,7 +294,9 @@ export const NewAdScreen = () => {
             type="outline"
             color="green"
             title="Добавить станцию"
-            onPress={() => {}}
+            onPress={() => {
+              setStations(prevState => prevState + 1)
+            }}
           />
         </Row>
 
@@ -469,7 +488,7 @@ export const NewAdScreen = () => {
           <Text style={styles.title}>Фотографии</Text>
           <View style={{flexDirection: 'row', marginBottom: 14}}>
             <TouchableOpacity
-              activeOpacity={0.6}
+              activeOpacity={0.7}
               onPress={() => {
                 launchImageLibrary(
                   {
@@ -520,7 +539,7 @@ export const NewAdScreen = () => {
               showsHorizontalScrollIndicator={false}
               alwaysBounceHorizontal={false}
               bounces={false}
-              keyExtractor={(item) => item}
+              keyExtractor={(item, index) => index.toString()}
               horizontal
               renderItem={_renderPhoto}
               data={state.photos}
@@ -857,6 +876,9 @@ export const NewAdScreen = () => {
             }}
             titleStyle={{fontWeight: '700', fontSize: 13}}
             title="Опубликовать объявление"
+            // onPress={() => {
+            //   toggleModal();
+            // }}
             onPress={() => {
               AddAdvert(state);
               dispatch({
@@ -868,8 +890,13 @@ export const NewAdScreen = () => {
           <Text style={{color: '#707378', fontSize: 12, alignSelf: 'center'}}>
             Объявление будет опубликовано после модерации
           </Text>
+       
         </Row>
+
+      
       </ScrollView>
+
+
     </Screen>
   );
 };

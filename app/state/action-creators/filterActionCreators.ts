@@ -45,3 +45,6 @@ export const selectDistrict = (value: string) => ({
   type: ActionType.SELECT_DISTRICT,
   payload: value,
 });
+export const resetFilters = () => ({
+  type: ActionType.RESET_FILTERS,
+});

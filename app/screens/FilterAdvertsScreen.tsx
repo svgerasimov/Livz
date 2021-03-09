@@ -40,6 +40,7 @@ export const FilterAdvertsScreen: React.FC<FilterAdvertsScreenProps> = ({
     selectCity,
     selectDistrict,
     selectSubwayStation,
+    resetFilters
   } = useActions();
   const state = useTypedSelector((state) => state.filter);
   const filteredAdverts = useTypedSelector(getFilteredAdverts);
@@ -174,6 +175,15 @@ export const FilterAdvertsScreen: React.FC<FilterAdvertsScreenProps> = ({
           title={`Найдено ${Object.keys(filteredAdverts).length} объектов`}
         />
       </Row>
+      {/* <Row>
+        <Button
+          buttonStyle={[styles.btnStyle, {backgroundColor: '#EFF2F5'}]}
+          onPress={() => {
+            resetFilters()
+          }}
+          title='Сбросить фильтры'
+        />
+      </Row> */}
     </Screen>
   );
 };

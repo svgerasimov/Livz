@@ -1,27 +1,11 @@
 import React from 'react';
-import Svg, {Path, G} from 'react-native-svg';
+import Svg, {Path} from 'react-native-svg';
 import {IconProps} from '../../../utility/types';
-import {withTouchable} from '../../../HOC';
 
-const Icon: React.FC<IconProps> = ({color = '#dd302f'}) => (
-  <Svg
-    width="13"
-    height="10"
-    viewBox="0 0 13 10"
-    preserveAspectRatio="xMidYMid meet">
-    <G
-      transform="translate(0.000000,768.000000) scale(0.100000,-0.100000)"
-      fill={color}
-      stroke="none">
-      <Path
-        d="M1390 6285 l-275 -275 1085 -1085 1085 -1085 -1085 -1085 -1085
-   -1085 278 -277 277 -278 1085 1085 1085 1085 1085 -1085 1085 -1085 277 278
-   278 277 -1085 1085 -1085 1085 1085 1085 1085 1085 -278 277 -277 278 -1085
-   -1085 -1085 -1085 -1083 1083 c-595 595 -1084 1082 -1087 1082 -3 0 -129 -124
-   -280 -275z"
-      />
-    </G>
-  </Svg>
+export const CloseIcon: React.FC<IconProps> = ({color = "#8F8F8F"}) => (
+    <Svg width="8" height="8" viewBox="0 0 8 8" fill="none">
+    <Path d="M8 0.942703L7.0573 0L3.99999 3.05729L0.942703 0L0 0.942703L3.05729 3.99999L0 7.0573L0.942703 8L3.99999 4.94271L7.05728 8L7.99998 7.0573L4.94271 3.99999L8 0.942703Z" fill={color}/>
+    </Svg>
 );
 
-export const CloseIcon = withTouchable(Icon);
+

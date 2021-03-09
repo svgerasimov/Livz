@@ -2,7 +2,7 @@ import React from 'react';
 import {View, TouchableOpacity, Text} from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {Routes} from './routes';
-import {ProfileScreen, FeedScreen} from '../screens';
+import {ProfileScreen, FeedScreen, HelpScreen, AboutAppScreen, LicenseAgreementScreen, EditProfileScreen} from '../screens';
 import {Header} from '../components/Header';
 import {ArrowLeftIcon, HomeIcon, ProfileIcon} from '../components/svg/icons';
 import {withTouchable} from '../HOC';
@@ -10,6 +10,10 @@ import {withTouchable} from '../HOC';
 export type ProfileParamList = {
   [Routes.FEED]: undefined;
   [Routes.PROFILE]: undefined;
+  [Routes.HELP]: undefined;
+  [Routes.ABOUT_APP]: undefined;
+  [Routes.LICENSE_AGREEMENT]: undefined;
+  [Routes.EDIT_PROFILE]: undefined;
 };
 const Stack = createStackNavigator<ProfileParamList>();
 const TouchableHomeIcon = withTouchable(HomeIcon);
@@ -82,6 +86,78 @@ export function ProfileStack() {
               //     <TouchableHomeIcon color="white" onPress={() => {}} />
               //   }
 
+              {...props}
+            />
+          ),
+        }}
+      />
+      <Stack.Screen
+        name={Routes.HELP}
+        component={HelpScreen}
+        options={{
+          title: 'Помощь',
+          header: (props) => (
+            <Header
+              leftButton={
+                <ArrowLeftIcon
+                  color="white"
+                  onPress={() => props.navigation.goBack()}
+                />
+              }
+              {...props}
+            />
+          ),
+        }}
+      />
+      <Stack.Screen
+        name={Routes.ABOUT_APP}
+        component={AboutAppScreen}
+        options={{
+          title: 'О приложении',
+          header: (props) => (
+            <Header
+              leftButton={
+                <ArrowLeftIcon
+                  color="white"
+                  onPress={() => props.navigation.goBack()}
+                />
+              }
+              {...props}
+            />
+          ),
+        }}
+      />
+      <Stack.Screen
+        name={Routes.LICENSE_AGREEMENT}
+        component={LicenseAgreementScreen}
+        options={{
+          title: 'Лицензионное соглашение',
+          header: (props) => (
+            <Header
+              leftButton={
+                <ArrowLeftIcon
+                  color="white"
+                  onPress={() => props.navigation.goBack()}
+                />
+              }
+              {...props}
+            />
+          ),
+        }}
+      />
+      <Stack.Screen
+        name={Routes.EDIT_PROFILE}
+        component={EditProfileScreen}
+        options={{
+          title: 'Редактирование профиля',
+          header: (props) => (
+            <Header
+              leftButton={
+                <ArrowLeftIcon
+                  color="white"
+                  onPress={() => props.navigation.goBack()}
+                />
+              }
               {...props}
             />
           ),

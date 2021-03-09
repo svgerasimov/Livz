@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   Text,
   View,
@@ -18,6 +18,7 @@ import {
   CheckedIcon,
   CameraIcon,
   HeartIcon,
+  CloseIcon,
 } from '../components/svg/icons';
 import {Button} from '../components/Button';
 import {Apartment} from '../data/types';
@@ -28,6 +29,8 @@ import {useTypedSelector} from '../hooks/useTypedSelector';
 import {Colors} from '../config';
 import {useNavigation} from '@react-navigation/native';
 import {Routes} from '../navigation/routes';
+import Modal from 'react-native-modal';
+import call from 'react-native-phone-call'
 
 interface AdvertCardProps {
   id: string;
@@ -39,7 +42,7 @@ export const AdvertCard: React.FC<AdvertCardProps> = ({id}) => {
   const navigation = useNavigation();
   const {LikeAdvert, UnlikeAdvert} = useActions();
   const advert = useTypedSelector((state) => state.advertisements.data[id]);
-  console.log('advert', advert);
+  // console.log('advert', advert);
   const isFavorite = useTypedSelector(
     (state) => state.advertisements.data[advert.id].isFavorite,
   );
@@ -50,6 +53,21 @@ export const AdvertCard: React.FC<AdvertCardProps> = ({id}) => {
     }
     return {uri: advert.photos[0]};
   };
+
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [isSecondModalVisible, setSecondModalVisible] = useState(false);
+
+  const toggleModal = () => {
+    setModalVisible(!isModalVisible);
+  };
+  const toggleSecondModal = () => {
+    setSecondModalVisible(!isSecondModalVisible);
+  };
+
+  const callArgs = {
+    number: !!advert.phone || '89103483747', 
+    prompt: false
+  }
 
   return (
     <View style={styles.cardContainer}>
@@ -222,7 +240,7 @@ export const AdvertCard: React.FC<AdvertCardProps> = ({id}) => {
           color="smoke"
           buttonStyle={{borderRadius: 5, width: 'auto', flex: 1}}
           title="Оставить заявку"
-          onPress={() => {}}
+          onPress={toggleModal}
         />
         <Button
           leftIcon={<PhoneIcon />}
@@ -234,9 +252,152 @@ export const AdvertCard: React.FC<AdvertCardProps> = ({id}) => {
           }}
           titleStyle={{fontWeight: '700'}}
           title="Позвонить"
-          onPress={() => {}}
+          onPress={() => {
+            call(callArgs).catch(console.error)
+          }}
         />
       </View>
+
+      <Modal isVisible={isModalVisible}>
+        <View
+          style={{
+            backgroundColor: 'white',
+            borderRadius: 8,
+            overflow: 'hidden',
+            // padding: 20,
+          }}>
+          <TouchableOpacity
+            activeOpacity={0.75}
+            onPress={() => {
+              toggleModal();
+            }}
+            style={{
+              zIndex: 99,
+              position: 'absolute',
+              right: 12,
+              top: 12,
+              justifyContent: 'center',
+              alignItems: 'center',
+              width: 30,
+              height: 30,
+              borderRadius: 15,
+              borderColor: '#E5E5E5',
+              borderWidth: 1,
+            }}>
+            <CloseIcon />
+          </TouchableOpacity>
+          <Text
+            style={{
+              fontSize: 19,
+              lineHeight: 27,
+              color: 'black',
+              // alignSelf: 'center',
+              paddingHorizontal: 40,
+              paddingVertical: 25,
+              textAlign: 'center',
+            }}>
+            Оставить заявку на объект?
+          </Text>
+
+          <View
+            style={{
+              width: '100%',
+              flexDirection: 'row',
+            }}>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              // onPress={() => {}}
+              onPress={() => {
+                toggleModal();
+                setTimeout(() => {
+                  toggleSecondModal()
+                  
+                }, 500);
+              }}
+              style={{
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: 58,
+                flex: 1,
+                borderWidth: 1,
+                borderColor: '#EFEFEF',
+              }}>
+              <Text style={{fontSize: 14, color: '#545454'}}>Да</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              // onPress={() => {}}
+              onPress={toggleModal}
+              style={{
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: 58,
+                flex: 1,
+                borderWidth: 1,
+                borderColor: '#EFEFEF',
+              }}>
+              <Text style={{fontSize: 14, color: '#545454'}}>Нет</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+      <Modal isVisible={isSecondModalVisible}>
+        <View
+          style={{
+            backgroundColor: 'white',
+            borderRadius: 8,
+            overflow: 'hidden',
+            padding: 20,
+          }}>
+          <TouchableOpacity
+            activeOpacity={0.75}
+            onPress={() => {
+              toggleSecondModal();
+            }}
+            style={{
+              zIndex: 99,
+              position: 'absolute',
+              right: 12,
+              top: 12,
+              justifyContent: 'center',
+              alignItems: 'center',
+              width: 30,
+              height: 30,
+              borderRadius: 15,
+              borderColor: '#E5E5E5',
+              borderWidth: 1,
+            }}>
+            <CloseIcon />
+          </TouchableOpacity>
+          <Text
+            style={{
+              fontSize: 19,
+              lineHeight: 27,
+              color: 'black',
+              // alignSelf: 'center',
+              // paddingHorizontal: 40,
+              // paddingVertical: 12,
+              paddingBottom: 10,
+              textAlign: 'center',
+            }}>
+            Спасибо!
+          </Text>
+          <Text
+            style={{
+              fontSize: 14,
+              lineHeight: 27,
+              color: '#545454',
+              // alignSelf: 'center',
+              // paddingHorizontal: 40,
+              // paddingVertical: 12,
+              textAlign: 'center',
+            }}>
+            Ваша заявка принята!
+          </Text>
+
+       
+        </View>
+      </Modal>
     </View>
     // </TouchableOpacity>
   );

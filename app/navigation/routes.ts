@@ -20,4 +20,8 @@ export enum Routes {
   PHONE_NUMBER_CONFIRMATION = 'PhoneNumberConfirmation',
   RESTORE_ACCESS = 'RestoreAccess',
   RESTORE_ACCESS_COMPLETE = 'RestoreAccessComplete',
+  HELP = 'Help',
+  ABOUT_APP = 'AboutApp',
+  LICENSE_AGREEMENT = 'LicenseAgreement',
+  EDIT_PROFILE = 'EditProfile'
 }

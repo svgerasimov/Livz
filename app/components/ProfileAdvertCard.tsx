@@ -1,5 +1,5 @@
-import React from 'react';
-import {Text, View, ImageBackground} from 'react-native';
+import React, {useState} from 'react';
+import {Text, View, ImageBackground, TouchableOpacity} from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import LinearGradient from 'react-native-linear-gradient';
 import {
@@ -20,6 +20,7 @@ import {
   CameraIcon,
   HeartIcon,
   ThreeDotsIcon,
+  CloseIcon,
 } from '../components/svg/icons';
 import {Button} from './Button';
 import {convertRubToUsd} from '../utility';
@@ -29,6 +30,7 @@ import {useTypedSelector} from '../hooks/useTypedSelector';
 import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {rems} from '../config';
+import Modal from 'react-native-modal';
 
 interface AdvertCardProps {
   id: string;
@@ -41,6 +43,11 @@ export const ProfileAdvertCard: React.FC<AdvertCardProps> = ({id}) => {
   const isFavorite = useTypedSelector(
     (state) => state.advertisements.data[advert.id].isFavorite,
   );
+  const [isModalVisible, setModalVisible] = useState(false);
+
+  const toggleModal = () => {
+    setModalVisible(!isModalVisible);
+  };
 
   return (
     <View style={styles.cardContainer}>
@@ -104,7 +111,7 @@ export const ProfileAdvertCard: React.FC<AdvertCardProps> = ({id}) => {
                       <ThreeDotsIcon />
                     </MenuTrigger>
                     <MenuOptions>
-                      <MenuOption onSelect={() => {}}>
+                      <MenuOption onSelect={toggleModal}>
                         <Text style={styles.menuOptionText}>
                           Удалить объявление
                         </Text>
@@ -118,6 +125,82 @@ export const ProfileAdvertCard: React.FC<AdvertCardProps> = ({id}) => {
                 </View>
               </View>
 
+              <Modal isVisible={isModalVisible}>
+                <View
+                  style={{
+                    backgroundColor: 'white',
+                    borderRadius: 8,
+                    overflow: 'hidden',
+                    // padding: 20,
+                  }}>
+                  <TouchableOpacity
+                    activeOpacity={0.95}
+                    onPress={toggleModal}
+                    style={{
+                      zIndex: 99,
+                      position: 'absolute',
+                      right: 12,
+                      top: 12,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      width: 30,
+                      height: 30,
+                      borderRadius: 15,
+                      borderColor: '#E5E5E5',
+                      borderWidth: 1,
+                    }}>
+                    <CloseIcon />
+                  </TouchableOpacity>
+                  <Text
+                    style={{
+                      fontSize: 19,
+                      lineHeight: 27,
+                      color: 'black',
+                      // alignSelf: 'center',
+                      paddingHorizontal: 40,
+                      paddingVertical: 12,
+                      textAlign: 'center',
+                    }}>
+                    Вы действительно хотите удалить объявление?
+                  </Text>
+
+                  <View
+                    style={{
+                      width: '100%',
+                      flexDirection: 'row',
+                    }}>
+                    <TouchableOpacity
+                    activeOpacity={0.8}
+                      // onPress={() => {}}
+                      onPress={toggleModal}
+                      style={{
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        height: 58,
+                        flex: 1,
+                        borderWidth: 1,
+                        borderColor: '#EFEFEF',
+                      }}>
+                      <Text style={{fontSize: 14, color: '#545454'}}>Да</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                    activeOpacity={0.8}
+                      // onPress={() => {}}
+                      onPress={toggleModal}
+                      style={{
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        height: 58,
+                        flex: 1,
+                        borderWidth: 1,
+                        borderColor: '#EFEFEF',
+                      }}>
+                      <Text style={{fontSize: 14, color: '#545454'}}>Нет</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </Modal>
+
               <View
                 style={{
                   position: 'absolute',
@@ -129,7 +212,7 @@ export const ProfileAdvertCard: React.FC<AdvertCardProps> = ({id}) => {
 
               <View style={{position: 'absolute', bottom: 12, left: 12}}>
                 <Text style={{fontSize: 16, color: 'white'}}>
-                  {advert.name}
+                  {advert.title}
                 </Text>
                 <Text style={{fontSize: 13, color: 'white', marginTop: 3}}>
                   {advert.developer || 'ЖК ДомИнвест'}

@@ -20,9 +20,10 @@ import {StackNavigationProp} from '@react-navigation/stack';
 import {RouteProp} from '@react-navigation/native';
 import {SearchAdvertsParamList} from '../navigation/SearchAdvertsStack';
 import {Routes} from '../navigation/routes';
-import {Colors, rems} from '../config';
+import {Colors, rems, size} from '../config';
 import {withTouchable} from '../HOC';
 import {AdvertCard} from '../components/AdvertCard';
+import { InputField } from '../components'
 import {convertRubToUsd} from '../utility';
 import {
   ShareIcon,
@@ -56,6 +57,24 @@ import Collapsible from 'react-native-collapsible';
 import {SecuritiesOfApartment} from '../data/apartments';
 import {premiumAdvertsIdsSelector} from '../state/selectors';
 const {width, height} = Dimensions.get('window');
+import {Formik, FormikHelpers, Field} from 'formik';
+import * as yup from 'yup';
+import Modal from 'react-native-modal';
+
+const validationSchema = yup.object().shape({
+  name: yup.string().required('Необходимо ввести Ваше имя'),
+  phone: yup.string().required('Необходимо ввести номер'),
+});
+
+interface FormValues {
+  name: string;
+  phone: string;
+}
+
+const initialValues: FormValues = {
+  name: '',
+  phone: '',
+};
 
 const TouchableHeartIcon = withTouchable(HeartIcon);
 
@@ -93,6 +112,7 @@ export const AdvertScreen: React.FC<AdvertScreenProps> = ({
   navigation,
   route,
 }) => {
+  
   const ref = useRef(null!);
   const premiumOffersRef = useRef(null!);
   const similarAdvertsRef = useRef(null!);
@@ -111,7 +131,7 @@ export const AdvertScreen: React.FC<AdvertScreenProps> = ({
   );
   const [isMapCollapsed, setMapCollapsed] = useState(false);
   const [isDescriptionCollapsed, seDescriptionCollapsed] = useState(true);
-
+  const [isModalVisible, setModalVisible] = useState(false);
   const securitiesOfApartmentKeys: (keyof typeof SecuritiesOfApartment)[] = Object.keys(
     SecuritiesOfApartment,
   ) as (keyof typeof SecuritiesOfApartment)[];
@@ -121,6 +141,9 @@ export const AdvertScreen: React.FC<AdvertScreenProps> = ({
       return photo;
     }
     return {uri: photo};
+  };
+  const toggleModal = () => {
+    setModalVisible(!isModalVisible);
   };
 
   const _renderItem = ({item, index}: any) => {
@@ -165,7 +188,7 @@ export const AdvertScreen: React.FC<AdvertScreenProps> = ({
 
   const renderPremiumAdvert = ({item}: any) => {
     return (
-      <View style={{marginHorizontal: 10, marginTop: 0}}>
+      <View style={{marginRight: 10, marginTop: 0,}}>
         <AdvertCard id={item} />
       </View>
     );
@@ -173,7 +196,7 @@ export const AdvertScreen: React.FC<AdvertScreenProps> = ({
 
   const renderSimilarAdvert = ({item}: any) => {
     return (
-      <View style={{marginHorizontal: 10}}>
+      <View style={{marginRight: 10}}>
         <AdvertCard id={item} />
       </View>
     );
@@ -584,7 +607,9 @@ export const AdvertScreen: React.FC<AdvertScreenProps> = ({
             <TouchableOpacity
               style={styles.mortgageBrokerButton}
               activeOpacity={0.85}
-              onPress={() => {}}>
+              onPress={() => {
+                toggleModal()
+              }}>
               <View style={{marginRight: 16}}>
                 <WalletIcon />
               </View>
@@ -592,6 +617,7 @@ export const AdvertScreen: React.FC<AdvertScreenProps> = ({
                 Помощь ипотечного брокера
               </Text>
             </TouchableOpacity>
+           
           </Row>
           <Row style={styles.row}>
             <Text style={styles.title}>Премиум предложения</Text>
@@ -780,5 +806,16 @@ const styles = EStyleSheet.create({
     color: '$textColor',
     fontSize: rems[14],
     fontWeight: '400',
+  },
+  form: {
+    // marginVertical: 14,
+    marginTop: 10,
+  },
+  btnContainer: {
+    alignItems: 'center',
+  },
+  input: {
+    fontSize: size.regular,
+    color: '#B4B6BB',
   },
 });

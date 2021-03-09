@@ -73,7 +73,7 @@ export type Adverts = {
 export type FilterParams = {
   type: any;
   sort: any;
-  anyOfRooms: any;
+  numberOfRooms: any;
   priceFrom: any;
   priceTo: any;
   city: any;

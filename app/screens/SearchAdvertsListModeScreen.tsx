@@ -1,10 +1,12 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   ActivityIndicator,
   Text,
   FlatList,
   ListRenderItem,
+  Dimensions,
+  TouchableOpacity
 } from 'react-native';
 import {RouteProp} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
@@ -22,6 +24,10 @@ import {Colors} from '../config';
 import {Apartment} from '../data/types';
 import {getFilteredAdverts} from '../state/selectors';
 import {rems} from '../config';
+import Modal from 'react-native-modal';
+import { orderBy } from 'lodash'
+
+const {height} = Dimensions.get('window');
 
 type SearchAdvertsListScreenNavigationProp = StackNavigationProp<
   SearchAdvertsParamList,
@@ -43,10 +49,62 @@ export const SearchAdvertsListScreen: React.FC<SearchAdvertsListScreenProps> = (
   // const {fetchAdverts} = useActions();
   // const {error, loading} = useTypedSelector((state) => state.advertisements);
   const adverts = useTypedSelector(getFilteredAdverts);
+  const [sortedAdverts, setsortedAdverts] = useState()
+  const [sortingKey, setSortingKey] = useState('')
+
+  const [isModalVisible, setModalVisible] = useState(false);
+  const toggleModal = () => {
+    setModalVisible(!isModalVisible);
+  };
+
+  // const sortingHandler = () => {
+  //   const ads = Object.values(adverts);
+  //   return orderBy(ads, ['price'], ['desc'])
+  // }
+
+
+
+  // useEffect(() => {
+  //   // console.log('=====================')
+
+  //   // console.log(sortingHandler())
+
+  //   // console.log('=====================')
+  //   if(sortingKey === 'price'){
+  //     const adsArr = Object.values(adverts);
+  //     const data = orderBy(adsArr, ['price'], ['desc'])
+  //     console.log(data)
+  //     setAds(Object.keys(data))
+  //   } else {
+
+  //     setAds(Object.keys(adverts))
+  //   }
+
+  // }, [adverts, sortingKey]);
 
   useEffect(() => {
-    console.log(adverts);
-  }, [adverts]);
+   console.log(adverts)
+  }, [adverts])
+
+  useEffect(() => {
+    const adsArr = Object.values(adverts);
+      if(sortingKey === 'price'){
+  
+        const data = orderBy(adsArr, ['price'], ['desc'])
+    
+        const arr = data.map((ad) => ad.id)
+        setsortedAdverts(arr)
+        // console.log(arr)
+      } else if (sortingKey === 'area'){
+  
+        const data = orderBy(adsArr, ['totalArea'], ['desc'])
+    
+        const arr = data.map((ad) => ad.id)
+        setsortedAdverts(arr)
+      }
+  }, [sortingKey])
+
+
 
   const renderAdvert: ListRenderItem<any> = ({item}) => {
     console.log(item);
@@ -74,7 +132,9 @@ export const SearchAdvertsListScreen: React.FC<SearchAdvertsListScreenProps> = (
           type="outline"
           color="smoke"
           title="Сортировка объектов"
-          onPress={() => {}}
+          onPress={() => {
+            toggleModal();
+          }}
           buttonStyle={[styles.btnStyle, {flex: 2, marginRight: 8}]}
           titleStyle={styles.titleStyle}
         />
@@ -89,16 +149,73 @@ export const SearchAdvertsListScreen: React.FC<SearchAdvertsListScreenProps> = (
         />
       </View>
 
-      {/* {!error && !loading && ( */}
       <FlatList
         keyExtractor={(item, index) => index.toString()}
-        data={Object.keys(adverts)}
+        // data={ads}
+        data={!!sortedAdverts ?  sortedAdverts : Object.keys(adverts) }
+        // data={Object.keys(adverts)}
         renderItem={renderAdvert}
         showsVerticalScrollIndicator={false}
         alwaysBounceVertical={false}
         bounces={false}
       />
-      {/* )} */}
+
+      <Modal
+        isVisible={isModalVisible}
+        onSwipeComplete={toggleModal}
+        swipeDirection={['up', 'down']}
+        style={styles.view}>
+        <View style={styles.content}>
+        <View
+        style={{
+          width: '100%',
+          borderRadius: 19,
+          borderWidth: 1,
+          borderColor: '#E7EAF0',
+          marginBottom: 25,
+        }}>
+        <TouchableOpacity
+          activeOpacity={1}
+          onPress={() => {
+            setSortingKey('price')
+            toggleModal()
+          }}
+          style={{
+            borderBottomWidth: 1,
+            borderColor: '#E7EAF0',
+            // height: 55,
+            flexDirection: 'row',
+            alignItems: 'center',
+            padding: 20,
+            backgroundColor: sortingKey === 'price' ? '#F4F7FB' : 'white',
+          }}>
+          <Text style={{fontSize: 15, color: '#4F5154'}}>
+            По стоимости
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          activeOpacity={1}
+          onPress={() => {
+            setSortingKey('area')
+            toggleModal()
+          }}
+          style={{
+            borderBottomWidth: 1,
+            borderColor: '#E7EAF0',
+            // height: 55,
+            flexDirection: 'row',
+            alignItems: 'center',
+            padding: 20,
+            backgroundColor: sortingKey === 'area' ? '#F4F7FB' : 'white',
+          }}>
+          <Text style={{fontSize: 15, color: '#4F5154'}}>
+          По площади
+          </Text>
+        </TouchableOpacity>
+    
+      </View>
+        </View>
+      </Modal>
     </Screen>
   );
 };
@@ -129,5 +246,22 @@ const styles = EStyleSheet.create({
     bottom: 0,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  view: {
+    justifyContent: 'flex-end',
+    margin: 0,
+  },
+  content: {
+    height: height / 2,
+    backgroundColor: 'white',
+    padding: 10,
+    // justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 21,
+    // borderColor: 'rgba(0, 0, 0, 0.1)',
+  },
+  contentTitle: {
+    fontSize: 20,
+    marginBottom: 12,
   },
 });

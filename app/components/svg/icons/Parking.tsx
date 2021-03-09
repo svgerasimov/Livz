@@ -4,7 +4,7 @@ import {IconProps} from '../../../utility/types';
 import {withTouchable} from '../../../HOC';
 
 const Icon: React.FC<IconProps> = ({color = '#98A1B0'}) => (
-  <Svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+  <Svg width="42" height="42" viewBox="0 0 28 28" fill="none">
     <Path
       d="M15.3968 6.79383H10.3907V21.2062H12.0313V16.6375H15.3968C18.0643 16.6375 20.2344 14.4674 20.2344 11.7999V11.6314C20.2344 8.96399 18.0643 6.79383 15.3968 6.79383ZM18.5938 11.8C18.5938 13.5628 17.1596 14.997 15.3968 14.997H12.0313V8.43445H15.3968C17.1596 8.43445 18.5938 9.86863 18.5938 11.6314V11.8Z"
       fill={color}

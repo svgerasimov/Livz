@@ -10,6 +10,7 @@ export enum ActionType {
   SELECT_DISTRICT = 'SELECT_DISTRICT',
   SET_PRICE_FROM = 'SET_PRICE_FROM',
   SET_PRICE_TO = 'SET_PRICE_TO',
+  RESET_FILTERS = 'RESET_FILTERS',
 }
 
 export type SelectTypeOfApartmentAction = {
@@ -47,6 +48,10 @@ export type SetPriceToAction = {
   payload: number;
 };
 
+export type ResetFiltersAction = {
+  type: ActionType.RESET_FILTERS;
+};
+
 export type Action =
   | SelectTypeOfApartmentAction
   | SelectSortOfApartmentAction
@@ -55,4 +60,5 @@ export type Action =
   | SelectSubwayStationAction
   | SelectDistrictAction
   | SetPriceFromAction
-  | SetPriceToAction;
+  | SetPriceToAction
+  | ResetFiltersAction;

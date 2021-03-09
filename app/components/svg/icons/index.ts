@@ -30,6 +30,7 @@ export * from './Check';
 export * from './Wallet';
 export * from './Close';
 export * from './SquareMeter';
+export * from './QuestionMark';
 export * from './Info';
 export * from './Photo';
 export * from './Plus';

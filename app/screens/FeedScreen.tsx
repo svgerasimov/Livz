@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   Text,
   View,
@@ -12,9 +12,9 @@ import {
   Dimensions,
   ActivityIndicator,
 } from 'react-native';
-import {Screen, Row, AdvertCard} from '../components';
+import {Screen, Row, AdvertCard, InputField, Button} from '../components';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import {rems, Colors} from '../config';
+import {rems, Colors, size, globalStyles} from '../config';
 import {uid} from '../utility';
 import {
   WalletIcon,
@@ -22,10 +22,29 @@ import {
   SubtractionIcon,
   MultiplicationIcon,
   DeletionIcon,
+  CloseIcon,
 } from '../components/svg/icons';
 import LinearGradient from 'react-native-linear-gradient';
 import {useTypedSelector, useActions} from '../hooks';
 import {getFilteredAdverts} from '../state/selectors';
+import {Formik, FormikHelpers, Field} from 'formik';
+import * as yup from 'yup';
+import Modal from 'react-native-modal';
+
+const validationSchema = yup.object().shape({
+  name: yup.string().required('Необходимо ввести Ваше имя'),
+  phone: yup.string().required('Необходимо ввести номер'),
+});
+
+interface FormValues {
+  name: string;
+  phone: string;
+}
+
+const initialValues: FormValues = {
+  name: '',
+  phone: '',
+};
 
 type Category = {
   id: string;
@@ -69,6 +88,7 @@ const NEWS: Category[] = [
 export const FeedScreen = () => {
   const {fetchAdverts} = useActions();
   const {error, loading} = useTypedSelector((state) => state.advertisements);
+  const [isModalVisible, setModalVisible] = useState(false);
   // const adverts = useTypedSelector(getFilteredAdverts);
 
   const adverts = useTypedSelector((state) => state.advertisements.data);
@@ -87,6 +107,9 @@ export const FeedScreen = () => {
   React.useEffect(() => {
     fetchAdverts();
   }, []);
+  const toggleModal = () => {
+    setModalVisible(!isModalVisible);
+  };
 
   return (
     <Screen style={styles.screen}>
@@ -160,7 +183,7 @@ export const FeedScreen = () => {
               <TouchableOpacity
                 style={styles.service}
                 activeOpacity={0.85}
-                onPress={() => {}}>
+                onPress={toggleModal}>
                 <View
                   style={{
                     marginRight: 16,
@@ -181,8 +204,8 @@ export const FeedScreen = () => {
             <Row style={styles.row}>
               <TouchableOpacity
                 style={styles.service}
-                activeOpacity={0.85}
-                onPress={() => {}}>
+                activeOpacity={0.95}
+                onPress={toggleModal}>
                 <View style={{marginRight: 16}}>
                   <WalletIcon />
                 </View>
@@ -190,6 +213,102 @@ export const FeedScreen = () => {
                   Помощь ипотечного брокера
                 </Text>
               </TouchableOpacity>
+              <Modal isVisible={isModalVisible}>
+                <View
+                  style={{
+                    backgroundColor: 'white',
+                    borderRadius: 8,
+                    padding: 20,
+                  }}>
+                  <TouchableOpacity
+                    activeOpacity={0.85}
+                    onPress={toggleModal}
+                    style={{
+                      zIndex: 99,
+                      position: 'absolute',
+                      right: 12,
+                      top: 12,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      width: 30,
+                      height: 30,
+                      borderRadius: 15,
+                      borderColor: '#E5E5E5',
+                      borderWidth: 1,
+                    }}>
+                    <CloseIcon />
+                  </TouchableOpacity>
+                  <Text
+                    style={{fontSize: 19, color: 'black', alignSelf: 'center'}}>
+                    Оставить заявку
+                  </Text>
+                  {/* <View style={{width: 30, height: 30, }}>
+
+                <CloseIcon />
+                </View> */}
+                  <Formik
+                    initialValues={initialValues}
+                    validationSchema={validationSchema}
+                    onSubmit={(
+                      values: FormValues,
+                      {resetForm, setSubmitting}: FormikHelpers<FormValues>,
+                    ) => {
+                      console.log(values);
+                      setTimeout(() => {
+                        resetForm({values: initialValues});
+                        setSubmitting(false);
+                        toggleModal();
+                      }, 500);
+                    }}>
+                    {({handleSubmit, isValid, isSubmitting}) => {
+                      return (
+                        <>
+                          <View style={styles.form}>
+                            <Field
+                              autofocus
+                              name="name"
+                              style={styles.input}
+                              inputStyle={styles.input}
+                              inputContainerStyle={styles.inputContainer}
+                              component={InputField}
+                              placeholder="Ваше имя"
+                            />
+                            <Field
+                              autofocus
+                              name="phone"
+                              style={styles.input}
+                              inputStyle={styles.input}
+                              inputContainerStyle={styles.inputContainer}
+                              component={InputField}
+                              placeholder="Введите свой номер телефона"
+                            />
+                          </View>
+                          <View style={styles.btnContainer}>
+                            <Button
+                              buttonStyle={{marginBottom: 12, width: '90%'}}
+                              loading={isSubmitting}
+                              disabled={isSubmitting || !isValid}
+                              color="green"
+                              onPress={handleSubmit}
+                              title="Оставить заявку"
+                            />
+                          </View>
+                          <Text
+                            style={{
+                              fontSize: 12,
+                              color: '#47484B',
+                              textAlign: 'center',
+                            }}>
+                            Продолжая, вы подтверждаете согласие с нашей
+                            политикой конфиденциальности и правилами
+                            использования
+                          </Text>
+                        </>
+                      );
+                    }}
+                  </Formik>
+                </View>
+              </Modal>
             </Row>
           </View>
           <View style={styles.contentBlock}>
@@ -236,7 +355,7 @@ const styles = EStyleSheet.create({
     padding: '$padding',
   },
   advertCard: {
-    width: '100% - 40',
+    width: '100% - 60',
     marginRight: 8,
   },
   contentBlock: {
@@ -302,5 +421,16 @@ const styles = EStyleSheet.create({
     color: '#191A1C',
     fontWeight: '500',
     fontSize: rems[18],
+  },
+  form: {
+    // marginVertical: 14,
+    marginTop: 10,
+  },
+  btnContainer: {
+    alignItems: 'center',
+  },
+  input: {
+    fontSize: size.regular,
+    color: '#B4B6BB',
   },
 });

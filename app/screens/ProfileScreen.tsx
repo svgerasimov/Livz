@@ -2,6 +2,7 @@ import React from 'react';
 import {StyleSheet, Text, View, Dimensions, ScrollView} from 'react-native';
 import {Screen} from '../components';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import FastImage from 'react-native-fast-image';
 import {rems} from '../config';
 import {
   UserIcon,
@@ -12,13 +13,31 @@ import {
 import {Button, ProfileAdvertCard} from '../components';
 import {TabView, SceneMap, TabBar} from 'react-native-tab-view';
 import {useTypedSelector, useActions} from '../hooks';
+import {TouchableOpacity} from 'react-native-gesture-handler';
+import {RouteProp} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {ProfileParamList} from '../navigation/ProfileStack';
+import {Routes} from '../navigation/routes';
+import {launchImageLibrary} from 'react-native-image-picker';
 
 const initialLayout = {width: Dimensions.get('window').width - 40};
 
-export const ProfileScreen = () => {
-  const {logout} = useActions();
+type ScreenNavigationProp = StackNavigationProp<
+  ProfileParamList,
+  Routes.PROFILE
+>;
+type ScreenRouteProp = RouteProp<ProfileParamList, Routes.PROFILE>;
+
+interface ProfileScreenProps {
+  navigation: ScreenNavigationProp;
+  route: ScreenRouteProp;
+}
+
+export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
+  const {logout, setAvatar} = useActions();
   const [index, setIndex] = React.useState(0);
   const adverts = useTypedSelector((state) => state.advertisements.data);
+  const avatar = useTypedSelector((state) => state.user.avatar);
   const [routes] = React.useState([
     {key: 'active', title: 'Активные (4)'},
     {key: 'onModeration', title: 'На модерации (2)'},
@@ -26,18 +45,19 @@ export const ProfileScreen = () => {
   ]);
 
   const Route = () => {
-    console.log(adverts);
     return (
-      <ScrollView
+      <View>
+        {/* <ScrollView
         showsVerticalScrollIndicator={false}
         bounces={false}
-        alwaysBounceVertical={false}>
+        alwaysBounceVertical={false}> */}
         {Object.keys(adverts).map((id) => (
           <View style={{marginBottom: 20}} key={id}>
             <ProfileAdvertCard id={id} />
           </View>
         ))}
-      </ScrollView>
+      </View>
+      // </ScrollView>
     );
   };
 
@@ -71,13 +91,32 @@ export const ProfileScreen = () => {
 
   return (
     <Screen style={styles.screen}>
-      <View>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        bounces={false}
+        alwaysBounceVertical={false}>
         <View
           style={{
             flexDirection: 'row',
             marginBottom: 32,
           }}>
-          <View
+          <TouchableOpacity
+            onPress={() => {
+              launchImageLibrary(
+                {
+                  mediaType: 'photo',
+                  includeBase64: false,
+                  maxHeight: 70,
+                  maxWidth: 70,
+                  quality: 1,
+                },
+                (response) => {
+                  // console.log('response', response);
+                  if (response.didCancel) return;
+                  setAvatar(response.uri);
+                },
+              );
+            }}
             style={{
               width: 70,
               height: 70,
@@ -86,9 +125,22 @@ export const ProfileScreen = () => {
               borderColor: '#D3D8E1',
               justifyContent: 'center',
               alignItems: 'center',
+              // overflow: 'hidden',
             }}>
-            <UserIcon />
-          </View>
+            {!!avatar ? (
+              <FastImage
+                key={avatar}
+                style={{width: 70, height: 70, borderRadius: 70 / 2}}
+                resizeMode={FastImage.resizeMode.cover}
+                source={{
+                  uri: avatar,
+                }}
+              />
+            ) : (
+              <UserIcon />
+            )}
+          </TouchableOpacity>
+
           <View style={{paddingLeft: 16}}>
             <Text style={{marginBottom: 2, fontSize: 20, color: '#191A1C'}}>
               Владимир
@@ -110,7 +162,9 @@ export const ProfileScreen = () => {
                 buttonStyle={{width: 141, height: 36}}
                 color="dark"
                 title="Редактировать"
-                onPress={() => {}}
+                onPress={() => {
+                  navigation.navigate(Routes.EDIT_PROFILE);
+                }}
               />
               <Button
                 titleStyle={{fontSize: 12}}
@@ -122,7 +176,6 @@ export const ProfileScreen = () => {
             </View>
           </View>
         </View>
-
         <View
           style={{
             width: '100%',
@@ -131,7 +184,9 @@ export const ProfileScreen = () => {
             borderColor: '#E7EAF0',
             marginBottom: 25,
           }}>
-          <View
+          <TouchableOpacity
+            activeOpacity={0.95}
+            onPress={() => navigation.navigate(Routes.HELP)}
             style={{
               borderBottomWidth: 1,
               borderColor: '#E7EAF0',
@@ -144,7 +199,7 @@ export const ProfileScreen = () => {
               <CircleIcon />
             </View>
             <Text style={{fontSize: 15, color: '#4F5154'}}>Помощь</Text>
-          </View>
+          </TouchableOpacity>
           <View
             style={{
               borderBottomWidth: 1,
@@ -161,7 +216,9 @@ export const ProfileScreen = () => {
               Настройка уведомлений
             </Text>
           </View>
-          <View
+          <TouchableOpacity
+            activeOpacity={0.95}
+            onPress={() => navigation.navigate(Routes.ABOUT_APP)}
             style={{
               // borderBottomWidth: 1,
               // borderColor: '#E7EAF0',
@@ -173,17 +230,16 @@ export const ProfileScreen = () => {
               <QuestionIcon />
             </View>
             <Text style={{fontSize: 15, color: '#4F5154'}}>О приложении</Text>
-          </View>
+          </TouchableOpacity>
         </View>
-      </View>
-      <TabView
-        // renderTabBar={(props) => <TabBar {...props} />}
-        renderTabBar={renderTabBar}
-        navigationState={{index, routes}}
-        renderScene={renderScene}
-        onIndexChange={setIndex}
-        initialLayout={initialLayout}
-      />
+        <TabView
+          renderTabBar={renderTabBar}
+          navigationState={{index, routes}}
+          renderScene={renderScene}
+          onIndexChange={setIndex}
+          initialLayout={initialLayout}
+        />
+      </ScrollView>
     </Screen>
   );
 };

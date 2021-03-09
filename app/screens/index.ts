@@ -19,6 +19,10 @@ export * from './CompleteRegistration';
 export * from './PhoneNumberConfirmation';
 export * from './RestoreAccess';
 export * from './RestoreAccessComplete';
+export * from './HelpScreen';
+export * from './AboutAppScreen';
+export * from './LicenseAgreementScreen';
+export * from './EditProfileScreen';
 
 export {
   LoginScreen,

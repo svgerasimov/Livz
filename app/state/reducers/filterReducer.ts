@@ -47,5 +47,16 @@ export const reducer = produce((draft: Draft<FilterParams>, action: Action) => {
       draft.district = action.payload;
       break;
     }
+    case ActionType.RESET_FILTERS: {
+      // draft.type = null;
+      // draft.sort = null;
+      // draft.numberOfRooms =null;
+      // draft.priceFrom =null;
+      // draft.priceTo = null;
+      // draft.city = null;
+      // draft.district = null;
+      // draft.subwayStation = null;
+      break;
+    }
   }
 }, initialState);

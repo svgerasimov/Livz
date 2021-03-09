@@ -23,6 +23,7 @@ export * from './HelpScreen';
 export * from './AboutAppScreen';
 export * from './LicenseAgreementScreen';
 export * from './EditProfileScreen';
+export * from './MessagesScreen';
 
 export {
   LoginScreen,

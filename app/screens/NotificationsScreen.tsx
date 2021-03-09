@@ -6,54 +6,67 @@ import {rems} from '../config';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Swipeout from 'react-native-swipeout';
 import moment from 'moment';
+import {useNavigation} from '@react-navigation/native';
+import { Routes } from '../navigation/routes'
 import 'moment/locale/ru';
 
-const ListItem = ({text = '', Icon}) => (
-  <>
-    <View
-      style={{
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: 20,
-        // paddingRight: 40,
-      }}>
-      <View style={[styles.iconContainer]}>{Icon}</View>
-      <View
+const ListItem = ({title = '', text = '', Icon = () => null}) => {
+  const navigation = useNavigation();
+  return (
+    <>
+      <TouchableOpacity
+      activeOpacity={0.9}
+      onPress={() => {
+        navigation.navigate(Routes.MESSAGES, {
+          title,
+          text,
+          Icon
+        })
+      }}
         style={{
-          marginLeft: 10,
-          flex: 1,
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: 20,
+          // paddingRight: 40,
         }}>
-        <Text
+        <View style={[styles.iconContainer]}>{Icon}</View>
+        <View
           style={{
-            fontSize: 16,
-            color: '#171B22',
-            marginBottom: 5,
-            paddingRight: 10,
+            marginLeft: 10,
+            flex: 1,
           }}>
-          {text}
-        </Text>
-        <Text
+          <Text
+            style={{
+              fontSize: 16,
+              color: '#171B22',
+              marginBottom: 5,
+              paddingRight: 10,
+            }}>
+            {title}
+          </Text>
+          <Text
+            style={{
+              color: '#717377',
+              fontSize: 12,
+            }}>
+            {moment().format('LL')}
+          </Text>
+        </View>
+        <View
           style={{
-            color: '#717377',
-            fontSize: 12,
-          }}>
-          {moment().format('LL')}
-        </Text>
-      </View>
-      <View
-        style={{
-          // flex: 1,
-          height: 6,
-          width: 6,
-          borderRadius: 3,
-          backgroundColor: '#383F92',
-        }}
-      />
-    </View>
-    <Separator />
-  </>
-);
+            // flex: 1,
+            height: 6,
+            width: 6,
+            borderRadius: 3,
+            backgroundColor: '#383F92',
+          }}
+        />
+      </TouchableOpacity>
+      <Separator />
+    </>
+  );
+} 
 
 const SwipeOutButton = () => (
   <TouchableOpacity
@@ -70,12 +83,14 @@ const SwipeOutButton = () => (
 export const NotificationsScreen = () => {
   const [notifications, setNotifications] = React.useState([
     {
-      text: 'Мы подобрали подходящие объявления для Вас',
+      title: 'Мы подобрали подходящие объявления для Вас',
       Icon: <SearchIcon width={14} height={14} color="white" />,
+      text: 'Мы подобрали подходящие объявления для Вас Мы подобрали подходящие объявления для Вас Мы подобрали подходящие объявления для Вас Мы подобрали подходящие объявления для Вас'
     },
     {
-      text: 'Ваше объявление заблокировано',
+      title: 'Ваше объявление заблокировано',
       Icon: <SearchIcon width={14} height={14} color="white" />,
+      text: 'Ваше объявление Таунхаус в Подмосковье 158 кв.м заблокировано администратором по причине некорректного заголовка и описания объекта'
     },
   ]);
   const swipeoutBtns = [{component: <SwipeOutButton />}];
@@ -83,10 +98,8 @@ export const NotificationsScreen = () => {
     <Screen>
       {notifications.map((n, i) => {
         return (
-          <Swipeout onClose={(sectionID, rowId, direction) => {
-console.log(sectionID, rowId, direction)
-          }} backgroundColor="white" right={swipeoutBtns}>
-            <ListItem key={i} text={n.text} Icon={n.Icon} />
+          <Swipeout backgroundColor="white" right={swipeoutBtns}>
+            <ListItem key={i} title={n.title} text={n.text} Icon={n.Icon} />
           </Swipeout>
         );
       })}

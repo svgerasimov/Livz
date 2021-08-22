@@ -30,6 +30,7 @@ import {getFilteredAdverts} from '../state/selectors';
 import {Formik, FormikHelpers, Field} from 'formik';
 import * as yup from 'yup';
 import Modal from 'react-native-modal';
+import {useSelector} from 'react-redux';
 
 const validationSchema = yup.object().shape({
   name: yup.string().required('Необходимо ввести Ваше имя'),
@@ -54,24 +55,6 @@ type Category = {
 
 const {width} = Dimensions.get('window');
 
-const CATEGORIES: Category[] = [
-  {
-    id: uid(),
-    image: require('../assets/img/house.png'),
-    title: 'Новостройки',
-  },
-  {
-    id: uid(),
-    image: require('../assets/img/newBuilding.png'),
-    title: 'Коттеджи',
-  },
-  {
-    id: uid(),
-    image: require('../assets/img/newBuilding.png'),
-    title: 'Квартиры',
-  },
-];
-
 const NEWS: Category[] = [
   {
     id: uid(),
@@ -86,15 +69,21 @@ const NEWS: Category[] = [
 ];
 
 export const FeedScreen = () => {
-  const {fetchAdverts} = useActions();
-  const {error, loading, data} = useTypedSelector((state) => state.advertisements);
+  const {fetchAdverts, fetchCategories, fetchMetro, fetchNews} = useActions();
+  const {error, loading, data, categories} = useTypedSelector(
+    (state) => state.advertisements,
+  );
+  const {news} = useSelector((state) => state.news);
   const [isModalVisible, setModalVisible] = useState(false);
   // const adverts = useTypedSelector(getFilteredAdverts);
 
   // const adverts = useTypedSelector((state) => state.advertisements.data);
   const FlatListItem = ({item, containerStyle = {}, titleStyle = {}}: any) => (
     <View style={[styles.cardContainer, containerStyle]}>
-      <ImageBackground style={{flex: 1}} resizeMode="cover" source={item.image}>
+      <ImageBackground
+        style={{flex: 1}}
+        resizeMode="cover"
+        source={{uri: `https://livz.ru/${item.image}`}}>
         <LinearGradient
           style={styles.linearGradient}
           colors={['rgba(26, 28, 31, 0.21)', 'rgba(26, 28, 31, 0.63)']}>
@@ -104,9 +93,23 @@ export const FeedScreen = () => {
     </View>
   );
 
+  let CATEGORIES: Category[];
+  if (categories) {
+    CATEGORIES = [...categories.filter((el) => el.popular)];
+  }
+
+  let NEWS: Category[];
+  if (news) {
+    NEWS = news;
+  }
+
   React.useEffect(() => {
     fetchAdverts();
+    fetchCategories();
+    fetchMetro();
+    fetchNews();
   }, []);
+
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
@@ -123,7 +126,7 @@ export const FeedScreen = () => {
         </View>
       )}
 
-      {!error && !loading && !!data &&(
+      {!error && !loading && !!data && (
         <ScrollView
           showsVerticalScrollIndicator={false}
           bounces={false}

@@ -6,36 +6,69 @@ export interface AdvertsState {
   loading: boolean;
   error: string | null;
   data: Adverts;
+  advert: Apartment;
   accountType: string;
   categories: any;
   attributes: any;
   favorite: any;
+  documents: any;
+  filters: any;
+  filteredAdverts: any;
+  recommendation: any;
 }
 
 const initialState: AdvertsState = {
   loading: false,
   error: null,
-  data: {},
+  data: [],
+  filteredData: [],
+  advert: null,
   accountType: 'Собственник',
   categories: [],
   attributes: [],
   favorite: [],
+  documents: [],
+  filters: {categoryId: 0},
+  recommendation: [],
 };
 
 export const reducer = produce(
   (draft: Draft<AdvertsState>, action: AdvertsAction) => {
     switch (action.type) {
       case ActionType.FETCH_ADVERTS_START: {
-        draft.loading = true;
+        draft.filters = action.payload;
         break;
       }
       case ActionType.FETCH_ADVERTS_SUCCESS: {
         draft.loading = false;
         draft.error = null;
-        draft.data = action.payload;
+        if (action.payload.length === 0 || action.payload[0]?.isFilters) {
+          draft.filteredData = action.payload;
+        } else {
+          draft.data = action.payload;
+        }
         break;
       }
       case ActionType.FETCH_ADVERTS_ERROR: {
+        draft.loading = false;
+        draft.error = action.payload;
+        break;
+      }
+      case ActionType.SET_RECOMMENDATION: {
+        draft.recommendation = action.payload;
+        break;
+      }
+      case ActionType.FETCH_SINGLE_ADVERT_START: {
+        draft.loading = true;
+        break;
+      }
+      case ActionType.FETCH_SINGLE_ADVERT_SUCCESS: {
+        draft.loading = false;
+        draft.error = null;
+        draft.advert = action.payload;
+        break;
+      }
+      case ActionType.FETCH_SINGLE_ADVERT_ERROR: {
         draft.loading = false;
         draft.error = action.payload;
         break;
@@ -77,7 +110,7 @@ export const reducer = produce(
       case ActionType.FETCH_FAVORITE_SUCCESS: {
         draft.loading = false;
         draft.error = null;
-        draft.attributes = action.payload;
+        draft.favorite = action.payload;
         break;
       }
       case ActionType.FETCH_FAVORITE_ERROR: {
@@ -96,6 +129,49 @@ export const reducer = produce(
         break;
       }
       case ActionType.UPDATE_FAVORITE_ERROR: {
+        draft.loading = false;
+        draft.error = action.payload;
+        break;
+      }
+      case ActionType.FETCH_DOCUMENTS_START: {
+        draft.loading = true;
+        break;
+      }
+      case ActionType.FETCH_DOCUMENTS_SUCCESS: {
+        draft.loading = false;
+        draft.error = null;
+        draft.documents = action.payload;
+        break;
+      }
+      case ActionType.FETCH_DOCUMENTS_ERROR: {
+        draft.loading = false;
+        draft.error = action.payload;
+        break;
+      }
+      case ActionType.ADD_DOCUMENTS_START: {
+        draft.loading = true;
+        break;
+      }
+      case ActionType.ADD_DOCUMENTS_SUCCESS: {
+        draft.loading = false;
+        draft.error = null;
+        break;
+      }
+      case ActionType.ADD_DOCUMENTS_ERROR: {
+        draft.loading = false;
+        draft.error = action.payload;
+        break;
+      }
+      case ActionType.DELETE_DOCUMENTS_START: {
+        draft.loading = true;
+        break;
+      }
+      case ActionType.DELETE_DOCUMENTS_SUCCESS: {
+        draft.loading = false;
+        draft.error = null;
+        break;
+      }
+      case ActionType.DELETE_DOCUMENTS_ERROR: {
         draft.loading = false;
         draft.error = action.payload;
         break;

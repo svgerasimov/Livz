@@ -31,6 +31,10 @@ import {Formik, FormikHelpers, Field} from 'formik';
 import * as yup from 'yup';
 import Modal from 'react-native-modal';
 import {useSelector} from 'react-redux';
+import {Routes} from '../navigation/routes';
+import {useNavigation} from '@react-navigation/native';
+import {apiClinet} from '../api';
+import { SetRecommendations } from '../state/action-creators';
 
 const validationSchema = yup.object().shape({
   name: yup.string().required('Необходимо ввести Ваше имя'),
@@ -69,12 +73,22 @@ const NEWS: Category[] = [
 ];
 
 export const FeedScreen = () => {
-  const {fetchAdverts, fetchCategories, fetchMetro, fetchNews} = useActions();
-  const {error, loading, data, categories} = useTypedSelector(
+  const navigation = useNavigation();
+  const {
+    fetchAdverts,
+    fetchCategories,
+    fetchMetro,
+    fetchNews,
+    fetchNotification,
+    AddApplication,
+  } = useActions();
+  const {error, loading, data, categories, recommendations} = useTypedSelector(
     (state) => state.advertisements,
   );
   const {news} = useSelector((state) => state.news);
-  const [isModalVisible, setModalVisible] = useState(false);
+  const {token} = useSelector((state) => state.auth);
+  const [isNeedPriceModalVisible, setNeedPriceModalVisible] = useState(false);
+  const [isBrokerHelpModalVisible, setBrokerHelpModalVisible] = useState(false);
   // const adverts = useTypedSelector(getFilteredAdverts);
 
   // const adverts = useTypedSelector((state) => state.advertisements.data);
@@ -83,11 +97,17 @@ export const FeedScreen = () => {
       <ImageBackground
         style={{flex: 1}}
         resizeMode="cover"
-        source={{uri: `https://livz.ru/${item.image}`}}>
+        source={
+          item.image
+            ? {uri: `https://livz.ru/${item.image}`}
+            : require('../assets/img/news_1.png')
+        }>
         <LinearGradient
           style={styles.linearGradient}
           colors={['rgba(26, 28, 31, 0.21)', 'rgba(26, 28, 31, 0.63)']}>
-          <Text style={[styles.cardTitleStyle, titleStyle]}>{item.title}</Text>
+          <Text style={[styles.cardTitleStyle, titleStyle]}>
+            {item.name || item.title}
+          </Text>
         </LinearGradient>
       </ImageBackground>
     </View>
@@ -108,6 +128,8 @@ export const FeedScreen = () => {
     fetchCategories();
     fetchMetro();
     fetchNews();
+    fetchNotification();
+    SetRecommendations(false);
   }, []);
 
   const toggleModal = () => {
@@ -167,12 +189,17 @@ export const FeedScreen = () => {
                 horizontal
                 data={NEWS}
                 renderItem={({item}) => (
-                  <FlatListItem
-                    key={item}
-                    item={item}
-                    containerStyle={styles.cardContainerNews}
-                    titleStyle={styles.categoriesCardTitle}
-                  />
+                  <TouchableOpacity
+                    onPress={() =>
+                      navigation.navigate(Routes.NEWS, {id: item.id})
+                    }>
+                    <FlatListItem
+                      key={item}
+                      item={item}
+                      containerStyle={styles.cardContainerNews}
+                      titleStyle={styles.categoriesCardTitle}
+                    />
+                  </TouchableOpacity>
                 )}
               />
             </Row>
@@ -186,7 +213,9 @@ export const FeedScreen = () => {
               <TouchableOpacity
                 style={styles.service}
                 activeOpacity={0.85}
-                onPress={toggleModal}>
+                onPress={() =>
+                  setNeedPriceModalVisible(!isNeedPriceModalVisible)
+                }>
                 <View
                   style={{
                     marginRight: 16,
@@ -203,20 +232,7 @@ export const FeedScreen = () => {
                 </View>
                 <Text style={styles.serviceTitle}>Оценка имущества</Text>
               </TouchableOpacity>
-            </Row>
-            <Row style={styles.row}>
-              <TouchableOpacity
-                style={styles.service}
-                activeOpacity={0.95}
-                onPress={toggleModal}>
-                <View style={{marginRight: 16}}>
-                  <WalletIcon />
-                </View>
-                <Text style={styles.serviceTitle}>
-                  Помощь ипотечного брокера
-                </Text>
-              </TouchableOpacity>
-              <Modal isVisible={isModalVisible}>
+              <Modal isVisible={isNeedPriceModalVisible}>
                 <View
                   style={{
                     backgroundColor: 'white',
@@ -225,7 +241,9 @@ export const FeedScreen = () => {
                   }}>
                   <TouchableOpacity
                     activeOpacity={0.85}
-                    onPress={toggleModal}
+                    onPress={() =>
+                      setNeedPriceModalVisible(!isNeedPriceModalVisible)
+                    }
                     style={{
                       zIndex: 99,
                       position: 'absolute',
@@ -258,9 +276,124 @@ export const FeedScreen = () => {
                     ) => {
                       console.log(values);
                       setTimeout(() => {
+                        AddApplication(values.phone, 'needPrice');
                         resetForm({values: initialValues});
                         setSubmitting(false);
-                        toggleModal();
+                        setNeedPriceModalVisible(!isNeedPriceModalVisible);
+                      }, 500);
+                    }}>
+                    {({handleSubmit, isValid, isSubmitting}) => {
+                      return (
+                        <>
+                          <View style={styles.form}>
+                            <Field
+                              autofocus
+                              name="name"
+                              style={styles.input}
+                              inputStyle={styles.input}
+                              inputContainerStyle={styles.inputContainer}
+                              component={InputField}
+                              placeholder="Ваше имя"
+                            />
+                            <Field
+                              autofocus
+                              name="phone"
+                              style={styles.input}
+                              inputStyle={styles.input}
+                              inputContainerStyle={styles.inputContainer}
+                              component={InputField}
+                              placeholder="Введите свой номер телефона"
+                            />
+                          </View>
+                          <View style={styles.btnContainer}>
+                            <Button
+                              buttonStyle={{marginBottom: 12, width: '90%'}}
+                              loading={isSubmitting}
+                              disabled={isSubmitting || !isValid}
+                              color="green"
+                              onPress={handleSubmit}
+                              title="Оставить заявку"
+                            />
+                          </View>
+                          <Text
+                            style={{
+                              fontSize: 12,
+                              color: '#47484B',
+                              textAlign: 'center',
+                            }}>
+                            Продолжая, вы подтверждаете согласие с нашей
+                            политикой конфиденциальности и правилами
+                            использования
+                          </Text>
+                        </>
+                      );
+                    }}
+                  </Formik>
+                </View>
+              </Modal>
+            </Row>
+            <Row style={styles.row}>
+              <TouchableOpacity
+                style={styles.service}
+                activeOpacity={0.95}
+                onPress={() =>
+                  setBrokerHelpModalVisible(!isBrokerHelpModalVisible)
+                }>
+                <View style={{marginRight: 16}}>
+                  <WalletIcon />
+                </View>
+                <Text style={styles.serviceTitle}>
+                  Помощь ипотечного брокера
+                </Text>
+              </TouchableOpacity>
+              <Modal isVisible={isBrokerHelpModalVisible}>
+                <View
+                  style={{
+                    backgroundColor: 'white',
+                    borderRadius: 8,
+                    padding: 20,
+                  }}>
+                  <TouchableOpacity
+                    activeOpacity={0.85}
+                    onPress={() =>
+                      setBrokerHelpModalVisible(!isBrokerHelpModalVisible)
+                    }
+                    style={{
+                      zIndex: 99,
+                      position: 'absolute',
+                      right: 12,
+                      top: 12,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      width: 30,
+                      height: 30,
+                      borderRadius: 15,
+                      borderColor: '#E5E5E5',
+                      borderWidth: 1,
+                    }}>
+                    <CloseIcon />
+                  </TouchableOpacity>
+                  <Text
+                    style={{fontSize: 19, color: 'black', alignSelf: 'center'}}>
+                    Оставить заявку
+                  </Text>
+                  {/* <View style={{width: 30, height: 30, }}>
+
+                <CloseIcon />
+                </View> */}
+                  <Formik
+                    initialValues={initialValues}
+                    validationSchema={validationSchema}
+                    onSubmit={(
+                      values: FormValues,
+                      {resetForm, setSubmitting}: FormikHelpers<FormValues>,
+                    ) => {
+                      console.log(values);
+                      setTimeout(() => {
+                        AddApplication(values.phone, 'brokerHelp');
+                        resetForm({values: initialValues});
+                        setSubmitting(false);
+                        setBrokerHelpModalVisible(!isBrokerHelpModalVisible);
                       }, 500);
                     }}>
                     {({handleSubmit, isValid, isSubmitting}) => {
@@ -328,10 +461,10 @@ export const FeedScreen = () => {
                 alwaysBounceHorizontal={false}
                 showsHorizontalScrollIndicator={false}
                 horizontal
-                data={Object.keys(data)}
+                data={recommendations}
                 renderItem={({item}) => (
                   <View style={styles.advertCard}>
-                    <AdvertCard id={item} />
+                    <AdvertCard advert={item} />
                   </View>
                 )}
               />

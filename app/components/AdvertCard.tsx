@@ -5,6 +5,7 @@ import {
   ImageBackground,
   TouchableOpacity,
   TouchableWithoutFeedback,
+  TextInput,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import LinearGradient from 'react-native-linear-gradient';
@@ -30,7 +31,7 @@ import {Colors} from '../config';
 import {useNavigation} from '@react-navigation/native';
 import {Routes} from '../navigation/routes';
 import Modal from 'react-native-modal';
-import call from 'react-native-phone-call'
+import call from 'react-native-phone-call';
 
 interface AdvertCardProps {
   id: string;
@@ -38,22 +39,29 @@ interface AdvertCardProps {
 
 const TouchableHeartIcon = withTouchable(HeartIcon);
 
-export const AdvertCard: React.FC<AdvertCardProps> = ({id}) => {
+export const AdvertCard: React.FC<AdvertCardProps> = ({advert}) => {
   const navigation = useNavigation();
-  const {LikeAdvert, UnlikeAdvert} = useActions();
-  const advert = useTypedSelector((state) => state.advertisements.data[id]);
+  const {UpdateFavorite, AddApplication} = useActions();
   // console.log('advert', advert);
   const isFavorite = useTypedSelector(
-    (state) => state.advertisements.data[advert.id].isFavorite,
+    (state) =>
+      state.advertisements.data.find((el) => el.id === advert.id)?.isFavorite,
   );
+  const userPhone = useTypedSelector((state) => state.user.user.phone);
+  const token = useTypedSelector((state) => state.auth.token);
+  const metros = useTypedSelector((state) => state.metro.data);
 
   const imageSource = () => {
-    if (typeof advert.photos[0] === 'number') {
-      return advert.photos[0];
+    if (advert?.images) {
+      if (typeof advert?.images[0]?.imagePublic === 'number') {
+        return advert?.images[0]?.imagePublic;
+      }
+      return {uri: `https://livz.ru/${advert?.images[0]?.imagePublic}`};
     }
-    return {uri: advert.photos[0]};
   };
 
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
   const [isModalVisible, setModalVisible] = useState(false);
   const [isSecondModalVisible, setSecondModalVisible] = useState(false);
 
@@ -65,9 +73,9 @@ export const AdvertCard: React.FC<AdvertCardProps> = ({id}) => {
   };
 
   const callArgs = {
-    number: !!advert.phone || '89103483747', 
-    prompt: false
-  }
+    number: !!advert?.phone || '89103483747',
+    prompt: false,
+  };
 
   return (
     <View style={styles.cardContainer}>
@@ -75,7 +83,10 @@ export const AdvertCard: React.FC<AdvertCardProps> = ({id}) => {
         <TouchableOpacity
           activeOpacity={0.9}
           onPress={() =>
-            navigation.navigate(Routes.ADVERT, {advertId: advert.id})
+            navigation.navigate(Routes.SEARCH, {
+              screen: Routes.ADVERT,
+              params: {advertId: advert.id},
+            })
           }>
           <ImageBackground source={imageSource()} style={styles.image}>
             <LinearGradient
@@ -90,9 +101,9 @@ export const AdvertCard: React.FC<AdvertCardProps> = ({id}) => {
                   alignItems: 'center',
                 }}>
                 <CameraIcon />
-                <Text style={{color: 'white', marginLeft: 10}}>
-                  {advert.photos.length} фото
-                </Text>
+                {/* <Text style={{color: 'white', marginLeft: 10}}>
+                  {advert?.photos?.length} фото
+                </Text> */}
               </View>
               <View
                 style={{
@@ -103,9 +114,7 @@ export const AdvertCard: React.FC<AdvertCardProps> = ({id}) => {
                 <TouchableHeartIcon
                   // color={currentAdvert.isFavorite ? Colors.white : Colors.green}
                   color={isFavorite ? Colors.primaryColor : Colors.white}
-                  onPress={() =>
-                    isFavorite ? UnlikeAdvert(id) : LikeAdvert(id)
-                  }
+                  onPress={() => UpdateFavorite(advert.id)}
                 />
               </View>
               <View
@@ -119,10 +128,10 @@ export const AdvertCard: React.FC<AdvertCardProps> = ({id}) => {
 
               <View style={{position: 'absolute', bottom: 12, left: 12}}>
                 <Text style={{fontSize: 16, color: 'white'}}>
-                  {advert.title}
+                  {advert?.name}
                 </Text>
                 <Text style={{fontSize: 13, color: 'white', marginTop: 3}}>
-                  {advert.developer || 'ЖК ДомИнвест'}
+                  {advert?.developer || 'ЖК ДомИнвест'}
                 </Text>
               </View>
             </LinearGradient>
@@ -135,14 +144,14 @@ export const AdvertCard: React.FC<AdvertCardProps> = ({id}) => {
             style={{
               fontSize: 21,
             }}>
-            {advert.price} &#8381;
+            {advert?.price} &#8381;
           </Text>
           <Text
             style={{
               color: '#9A9C9F',
               fontSize: 16,
             }}>
-            / &#36;{convertRubToUsd(advert.price).toFixed(2)}
+            / &#36;{convertRubToUsd(advert?.price).toFixed(2)}
           </Text>
         </View>
 
@@ -151,7 +160,7 @@ export const AdvertCard: React.FC<AdvertCardProps> = ({id}) => {
             flexDirection: 'row',
             alignItems: 'center',
           }}>
-          {!!advert.subwayStation && (
+          {!!metros.find((el) => el.id == advert?.metroId)?.name && (
             <View
               style={{
                 flexDirection: 'row',
@@ -159,21 +168,23 @@ export const AdvertCard: React.FC<AdvertCardProps> = ({id}) => {
                 marginRight: 8,
               }}>
               <MetroIcon />
-              <Text style={{marginLeft: 8}}>{advert.subwayStation}</Text>
+              <Text style={{marginLeft: 8}}>
+                {metros.find((el) => el.id === advert?.metroId).name}
+              </Text>
             </View>
           )}
-          {!!advert.publicTransportTripDuration && (
+          {!!advert?.publicTransportTripDuration && (
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <PointIcon />
               <Text style={{marginLeft: 8}}>
-                {advert.publicTransportTripDuration} мин. на транспорте
+                {advert?.publicTransportTripDuration} мин. на транспорте
               </Text>
             </View>
           )}
         </View>
 
         <View style={{marginVertical: 6}}>
-          <Text>{advert.address}</Text>
+          <Text>{advert?.address}</Text>
         </View>
 
         <View
@@ -190,7 +201,7 @@ export const AdvertCard: React.FC<AdvertCardProps> = ({id}) => {
               style={{
                 marginLeft: 7,
               }}>
-              {advert.numberOfRooms} комн-кв.
+              {advert?.numberOfRooms} комн-кв.
             </Text>
           </View>
 
@@ -206,7 +217,7 @@ export const AdvertCard: React.FC<AdvertCardProps> = ({id}) => {
                 style={{
                   marginLeft: 7,
                 }}>
-                {advert.totalArea || 30}
+                {advert?.area || 30}
               </Text>
               <View style={{flexDirection: 'row'}}>
                 <View style={{alignItems: 'flex-end'}}>
@@ -229,7 +240,7 @@ export const AdvertCard: React.FC<AdvertCardProps> = ({id}) => {
               style={{
                 marginLeft: 7,
               }}>
-              {advert.floor || 4}/{advert.numberOfFloorsAtBuilding || 15} этаж
+              {advert?.floor || 4}/{advert?.numberOfFloorsAtBuilding || 15} этаж
             </Text>
           </View>
         </View>
@@ -253,12 +264,106 @@ export const AdvertCard: React.FC<AdvertCardProps> = ({id}) => {
           titleStyle={{fontWeight: '700'}}
           title="Позвонить"
           onPress={() => {
-            call(callArgs).catch(console.error)
+            call(callArgs).catch(console.error);
           }}
         />
       </View>
 
-      <Modal isVisible={isModalVisible}>
+      <Modal isVisible={isModalVisible && !token}>
+        <View
+          style={{
+            backgroundColor: 'white',
+            borderRadius: 8,
+            overflow: 'hidden',
+            // padding: 20,
+          }}>
+          <TouchableOpacity
+            activeOpacity={0.75}
+            onPress={() => {
+              toggleModal();
+            }}
+            style={{
+              zIndex: 99,
+              position: 'absolute',
+              right: 12,
+              top: 12,
+              justifyContent: 'center',
+              alignItems: 'center',
+              width: 30,
+              height: 30,
+              borderRadius: 15,
+              borderColor: '#E5E5E5',
+              borderWidth: 1,
+            }}>
+            <CloseIcon />
+          </TouchableOpacity>
+          <Text
+            style={{
+              fontSize: 19,
+              lineHeight: 27,
+              color: 'black',
+              // alignSelf: 'center',
+              paddingHorizontal: 40,
+              paddingVertical: 25,
+              textAlign: 'center',
+            }}>
+            Оставить заявку?
+          </Text>
+
+          <TextInput
+            style={styles.textInput}
+            value={name}
+            onChangeText={(value) => setName(value)}
+            placeholder="Ваше имя"
+            textAlign="left"
+          />
+          <TextInput
+            style={styles.textInput}
+            value={phone}
+            onChangeText={(value) => setPhone(value)}
+            placeholder="Введите свой номер"
+            textAlign="left"
+          />
+
+          <View
+            style={{
+              width: '100%',
+              flexDirection: 'row',
+            }}>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              // onPress={() => {}}
+              onPress={() => {
+                toggleModal();
+                AddApplication(phone, 'needCall');
+                setTimeout(() => {
+                  toggleSecondModal();
+                }, 500);
+              }}
+              style={{
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: 55,
+                flex: 1,
+                borderRadius: 50,
+                backgroundColor: '#78BA54',
+              }}>
+              <Text style={{fontSize: 14, color: '#fff'}}>Оставить заявку</Text>
+            </TouchableOpacity>
+          </View>
+          <Text
+            style={{
+              fontSize: 12,
+              color: '#47484B',
+              paddingTop: 10,
+              textAlign: 'center',
+            }}>
+            Продолжая, вы подтверждаете согласие с нашей политикой
+            конфиденциальности и правилами использования
+          </Text>
+        </View>
+      </Modal>
+      <Modal isVisible={isModalVisible && !!token}>
         <View
           style={{
             backgroundColor: 'white',
@@ -309,9 +414,9 @@ export const AdvertCard: React.FC<AdvertCardProps> = ({id}) => {
               // onPress={() => {}}
               onPress={() => {
                 toggleModal();
+                AddApplication(userPhone, 'needCall');
                 setTimeout(() => {
-                  toggleSecondModal()
-                  
+                  toggleSecondModal();
                 }, 500);
               }}
               style={{
@@ -394,8 +499,6 @@ export const AdvertCard: React.FC<AdvertCardProps> = ({id}) => {
             }}>
             Ваша заявка принята!
           </Text>
-
-       
         </View>
       </Modal>
     </View>

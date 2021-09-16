@@ -27,6 +27,8 @@ import {
 } from '../components/svg/icons';
 
 import * as yup from 'yup';
+import { useDispatch } from 'react-redux';
+import { setPhone } from '../state/action-creators';
 
 const validationSchema = yup.object().shape({
   phone: yup.string().required('Необходимо ввести номер'),
@@ -53,6 +55,7 @@ const initialValues: FormValues = {
 
 export const RegisterScreen: React.FC<ScreenProps> = () => {
   const navigation = useNavigation<ScreenNavigationProp>();
+  const dispatch = useDispatch();
 
   return (
     <Screen style={styles.screen} Header={<AuthHeader />}>
@@ -69,10 +72,9 @@ export const RegisterScreen: React.FC<ScreenProps> = () => {
           {resetForm, setSubmitting}: FormikHelpers<FormValues>,
         ) => {
           console.log(values);
+          dispatch(setPhone(values.phone));
           navigation.navigate(Routes.PHONE_NUMBER_CONFIRMATION);
-          setTimeout(() => {
-            resetForm({values: initialValues});
-          }, 500);
+          resetForm({values: initialValues});
           // setTimeout(() => {
           //   console.log(values);
           //   setSubmitting(false);

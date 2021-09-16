@@ -5,10 +5,10 @@ import {AppNavigator} from '../navigation/AppNavigator';
 import {useTypedSelector} from '../hooks';
 
 export const RootNavigator = () => {
-  const auth = useTypedSelector((state) => state.auth.auth);
+  const token = useTypedSelector((state) => state.auth.token);
   return (
     <NavigationContainer>
-      {auth ? <AppNavigator /> : <AuthNavigator />}
+      {token ? <AppNavigator /> : <AuthNavigator />}
     </NavigationContainer>
   );
 };

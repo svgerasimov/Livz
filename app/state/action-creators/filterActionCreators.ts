@@ -6,7 +6,7 @@ import {Apartment} from '../../data/types';
 import {TypeOfApartment, SortOfApartment} from '../../data/types';
 import {Cities} from '../../data/cities';
 
-export const selectTypeOfApartment = (value: TypeOfApartment): Action => ({
+export const SetFilters = (value: TypeOfApartment): Action => ({
   type: ActionType.SELECT_TYPE_OF_APARTMENT,
   payload: value,
 });

@@ -6,7 +6,7 @@ import {
   FlatList,
   ListRenderItem,
   Dimensions,
-  TouchableOpacity
+  TouchableOpacity,
 } from 'react-native';
 import {RouteProp} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
@@ -22,10 +22,10 @@ import {useActions} from '../hooks/useActions';
 import {useTypedSelector} from '../hooks/useTypedSelector';
 import {Colors} from '../config';
 import {Apartment} from '../data/types';
-import {getFilteredAdverts} from '../state/selectors';
+import {getAdverts, getFilteredAdverts} from '../state/selectors';
 import {rems} from '../config';
 import Modal from 'react-native-modal';
-import { orderBy } from 'lodash'
+import {orderBy} from 'lodash';
 
 const {height} = Dimensions.get('window');
 
@@ -48,9 +48,12 @@ export const SearchAdvertsListScreen: React.FC<SearchAdvertsListScreenProps> = (
 }) => {
   // const {fetchAdverts} = useActions();
   // const {error, loading} = useTypedSelector((state) => state.advertisements);
-  const adverts = useTypedSelector(getFilteredAdverts);
-  const [sortedAdverts, setsortedAdverts] = useState()
-  const [sortingKey, setSortingKey] = useState('')
+  const adverts = useTypedSelector(getAdverts);
+  const filteredAdverts = useTypedSelector(
+    (state) => state.advertisements.filteredData,
+  );
+  const [sortedAdverts, setsortedAdverts] = useState();
+  const [sortingKey, setSortingKey] = useState('');
 
   const [isModalVisible, setModalVisible] = useState(false);
   const toggleModal = () => {
@@ -61,8 +64,6 @@ export const SearchAdvertsListScreen: React.FC<SearchAdvertsListScreenProps> = (
   //   const ads = Object.values(adverts);
   //   return orderBy(ads, ['price'], ['desc'])
   // }
-
-
 
   // useEffect(() => {
   //   // console.log('=====================')
@@ -83,34 +84,22 @@ export const SearchAdvertsListScreen: React.FC<SearchAdvertsListScreenProps> = (
   // }, [adverts, sortingKey]);
 
   useEffect(() => {
-   console.log(adverts)
-  }, [adverts])
-
-  useEffect(() => {
-    const adsArr = Object.values(adverts);
-      if(sortingKey === 'price'){
-  
-        const data = orderBy(adsArr, ['price'], ['desc'])
-    
-        const arr = data.map((ad) => ad.id)
-        setsortedAdverts(arr)
-        // console.log(arr)
-      } else if (sortingKey === 'area'){
-  
-        const data = orderBy(adsArr, ['totalArea'], ['desc'])
-    
-        const arr = data.map((ad) => ad.id)
-        setsortedAdverts(arr)
-      }
-  }, [sortingKey])
-
-
+    const adsArr = adverts;
+    if (sortingKey === 'price') {
+      const data = orderBy(adsArr, ['price'], ['desc']);
+      setsortedAdverts(data);
+      // console.log(arr)
+    } else if (sortingKey === 'area') {
+      const data = orderBy(adsArr, ['area'], ['desc']);
+      setsortedAdverts(data);
+    }
+  }, [sortingKey]);
 
   const renderAdvert: ListRenderItem<any> = ({item}) => {
     console.log(item);
     return (
       <View style={styles.row}>
-        <AdvertCard id={item} />
+        <AdvertCard advert={item} />
       </View>
     );
   };
@@ -152,7 +141,13 @@ export const SearchAdvertsListScreen: React.FC<SearchAdvertsListScreenProps> = (
       <FlatList
         keyExtractor={(item, index) => index.toString()}
         // data={ads}
-        data={!!sortedAdverts ?  sortedAdverts : Object.keys(adverts) }
+        data={
+          !!sortedAdverts
+            ? sortedAdverts
+            : filteredAdverts.length !== 0
+            ? filteredAdverts
+            : adverts
+        }
         // data={Object.keys(adverts)}
         renderItem={renderAdvert}
         showsVerticalScrollIndicator={false}
@@ -166,54 +161,49 @@ export const SearchAdvertsListScreen: React.FC<SearchAdvertsListScreenProps> = (
         swipeDirection={['up', 'down']}
         style={styles.view}>
         <View style={styles.content}>
-        <View
-        style={{
-          width: '100%',
-          borderRadius: 19,
-          borderWidth: 1,
-          borderColor: '#E7EAF0',
-          marginBottom: 25,
-        }}>
-        <TouchableOpacity
-          activeOpacity={1}
-          onPress={() => {
-            setSortingKey('price')
-            toggleModal()
-          }}
-          style={{
-            borderBottomWidth: 1,
-            borderColor: '#E7EAF0',
-            // height: 55,
-            flexDirection: 'row',
-            alignItems: 'center',
-            padding: 20,
-            backgroundColor: sortingKey === 'price' ? '#F4F7FB' : 'white',
-          }}>
-          <Text style={{fontSize: 15, color: '#4F5154'}}>
-            По стоимости
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          activeOpacity={1}
-          onPress={() => {
-            setSortingKey('area')
-            toggleModal()
-          }}
-          style={{
-            borderBottomWidth: 1,
-            borderColor: '#E7EAF0',
-            // height: 55,
-            flexDirection: 'row',
-            alignItems: 'center',
-            padding: 20,
-            backgroundColor: sortingKey === 'area' ? '#F4F7FB' : 'white',
-          }}>
-          <Text style={{fontSize: 15, color: '#4F5154'}}>
-          По площади
-          </Text>
-        </TouchableOpacity>
-    
-      </View>
+          <View
+            style={{
+              width: '100%',
+              borderRadius: 19,
+              borderWidth: 1,
+              borderColor: '#E7EAF0',
+              marginBottom: 25,
+            }}>
+            <TouchableOpacity
+              activeOpacity={1}
+              onPress={() => {
+                setSortingKey('price');
+                toggleModal();
+              }}
+              style={{
+                borderBottomWidth: 1,
+                borderColor: '#E7EAF0',
+                // height: 55,
+                flexDirection: 'row',
+                alignItems: 'center',
+                padding: 20,
+                backgroundColor: sortingKey === 'price' ? '#F4F7FB' : 'white',
+              }}>
+              <Text style={{fontSize: 15, color: '#4F5154'}}>По стоимости</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              activeOpacity={1}
+              onPress={() => {
+                setSortingKey('area');
+                toggleModal();
+              }}
+              style={{
+                borderBottomWidth: 1,
+                borderColor: '#E7EAF0',
+                // height: 55,
+                flexDirection: 'row',
+                alignItems: 'center',
+                padding: 20,
+                backgroundColor: sortingKey === 'area' ? '#F4F7FB' : 'white',
+              }}>
+              <Text style={{fontSize: 15, color: '#4F5154'}}>По площади</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </Modal>
     </Screen>

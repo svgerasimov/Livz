@@ -5,6 +5,7 @@ import {Routes} from './routes';
 import {NotificationsScreen, MessagesScreen} from '../screens';
 import {Header} from '../components/Header';
 import {ArrowLeftIcon} from '../components/svg/icons';
+import { store } from '../state';
 
 export type ParamList = {
   [Routes.NOTIFICATIONS]: undefined;
@@ -21,7 +22,7 @@ export function NotificationsStack() {
         name={Routes.NOTIFICATIONS}
         component={NotificationsScreen}
         options={{
-          title: 'Уведомления (2)',
+          title: `Уведомления (${store.getState().user.notification.length})`,
           header: (props) => (
             <Header
               // leftButton={

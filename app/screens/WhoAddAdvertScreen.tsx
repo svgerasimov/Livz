@@ -7,6 +7,8 @@ import {NewAdParamList} from '../navigation/NewAdStack';
 import {Routes} from '../navigation/routes';
 import {Button, Screen, Row, ButtonGroup} from '../components';
 import {rems} from '../config';
+import {useDispatch} from 'react-redux';
+import {UpdateAccountType} from '../state/action-creators/advertsActionCreators';
 
 type ScreenNavigationProp = StackNavigationProp<
   NewAdParamList,
@@ -22,7 +24,7 @@ interface ScreenProps {
 const roles = ['Агент', 'Собственник'] as const;
 
 export const WhoAddAdvertScreen: React.FC<ScreenProps> = ({navigation}) => {
-  const [role, setRole] = useState<typeof roles[number]>(null);
+  const dispatch = useDispatch();
   const [roleIndex, setRoleIndex] = useState();
 
   return (
@@ -36,8 +38,8 @@ export const WhoAddAdvertScreen: React.FC<ScreenProps> = ({navigation}) => {
           buttons={[...roles]}
           onPress={(selectedIndex) => {
             setRoleIndex(selectedIndex);
-            setRole(roles[selectedIndex]);
-            navigation.navigate(Routes.HOWTOADDADVERT)
+            dispatch(UpdateAccountType(roles[selectedIndex]));
+            navigation.navigate(Routes.HOWTOADDADVERT);
           }}
           selectedIndex={roleIndex}
         />

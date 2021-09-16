@@ -33,15 +33,15 @@ import {rems} from '../config';
 import Modal from 'react-native-modal';
 
 interface AdvertCardProps {
-  id: string;
+  advert: any;
 }
 
-export const ProfileAdvertCard: React.FC<AdvertCardProps> = ({id}) => {
+export const ProfileAdvertCard: React.FC<AdvertCardProps> = ({advert}) => {
   const navigation = useNavigation();
   const {LikeAdvert, UnlikeAdvert} = useActions();
-  const advert = useTypedSelector((state) => state.advertisements.data[id]);
   const isFavorite = useTypedSelector(
-    (state) => state.advertisements.data[advert.id].isFavorite,
+    (state) =>
+      state.advertisements.data.find((el) => el.id === advert.id).isFavorite,
   );
   const [isModalVisible, setModalVisible] = useState(false);
 
@@ -53,7 +53,9 @@ export const ProfileAdvertCard: React.FC<AdvertCardProps> = ({id}) => {
     <View style={styles.cardContainer}>
       <View style={styles.cardImage}>
         <View>
-          <ImageBackground source={advert.photos[0]} style={styles.image}>
+          <ImageBackground
+            // source={advert.photos[0]}
+            style={styles.image}>
             <LinearGradient
               style={{flex: 1}}
               colors={['rgba(26, 28, 31, 0.21)', 'rgba(26, 28, 31, 0.83)']}>
@@ -66,9 +68,9 @@ export const ProfileAdvertCard: React.FC<AdvertCardProps> = ({id}) => {
                   alignItems: 'center',
                 }}>
                 <CameraIcon />
-                <Text style={{color: 'white', marginLeft: 10}}>
+                {/* <Text style={{color: 'white', marginLeft: 10}}>
                   {advert.photos.length} фото
-                </Text>
+                </Text> */}
               </View>
               <View
                 style={{
@@ -170,7 +172,7 @@ export const ProfileAdvertCard: React.FC<AdvertCardProps> = ({id}) => {
                       flexDirection: 'row',
                     }}>
                     <TouchableOpacity
-                    activeOpacity={0.8}
+                      activeOpacity={0.8}
                       // onPress={() => {}}
                       onPress={toggleModal}
                       style={{
@@ -184,7 +186,7 @@ export const ProfileAdvertCard: React.FC<AdvertCardProps> = ({id}) => {
                       <Text style={{fontSize: 14, color: '#545454'}}>Да</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
-                    activeOpacity={0.8}
+                      activeOpacity={0.8}
                       // onPress={() => {}}
                       onPress={toggleModal}
                       style={{
@@ -212,10 +214,10 @@ export const ProfileAdvertCard: React.FC<AdvertCardProps> = ({id}) => {
 
               <View style={{position: 'absolute', bottom: 12, left: 12}}>
                 <Text style={{fontSize: 16, color: 'white'}}>
-                  {advert.title}
+                  {advert.name}
                 </Text>
                 <Text style={{fontSize: 13, color: 'white', marginTop: 3}}>
-                  {advert.developer || 'ЖК ДомИнвест'}
+                  {advert?.developer || 'ЖК ДомИнвест'}
                 </Text>
               </View>
             </LinearGradient>
@@ -269,13 +271,13 @@ export const ProfileAdvertCard: React.FC<AdvertCardProps> = ({id}) => {
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <PointIcon />
             <Text style={{marginLeft: 8}}>
-              {advert.publicTransportTripDuration} мин. на транспорте
+              {advert?.publicTransportTripDuration} мин. на транспорте
             </Text>
           </View>
         </View>
 
         <View style={{marginVertical: 6}}>
-          <Text>{advert.address}</Text>
+          <Text>{advert?.address}</Text>
         </View>
 
         <View
@@ -292,7 +294,7 @@ export const ProfileAdvertCard: React.FC<AdvertCardProps> = ({id}) => {
               style={{
                 marginLeft: 7,
               }}>
-              {advert.numberOfRooms} комн-кв.
+              {advert?.numberOfRooms} комн-кв.
             </Text>
           </View>
 
@@ -308,7 +310,7 @@ export const ProfileAdvertCard: React.FC<AdvertCardProps> = ({id}) => {
                 style={{
                   marginLeft: 7,
                 }}>
-                {advert.totalArea}
+                {advert?.area}
               </Text>
               <View style={{flexDirection: 'row'}}>
                 <View style={{alignItems: 'flex-end'}}>
@@ -331,7 +333,7 @@ export const ProfileAdvertCard: React.FC<AdvertCardProps> = ({id}) => {
               style={{
                 marginLeft: 7,
               }}>
-              {advert.floor}/{advert.numberOfFloorsAtBuilding} этаж
+              {advert?.floor}/{advert?.numberOfFloorsAtBuilding} этаж
             </Text>
           </View>
         </View>

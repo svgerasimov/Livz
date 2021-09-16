@@ -4,6 +4,11 @@ export enum ActionType {
   FETCH_ADVERTS_START = 'fetch_adverts_start',
   FETCH_ADVERTS_SUCCESS = 'fetch_adverts_success',
   FETCH_ADVERTS_ERROR = 'fetch_adverts_error',
+  SET_RECOMMENDATION = 'set_recommendation',
+  SET_RECOMMENDATION_START = 'set_recommendation_start',
+  FETCH_SINGLE_ADVERT_START = 'fetch_single_advert_start',
+  FETCH_SINGLE_ADVERT_SUCCESS = 'fetch_single_advert_success',
+  FETCH_SINGLE_ADVERT_ERROR = 'fetch_single_advert_error',
   FETCH_CATEGORIES_START = 'fetch_categories_start',
   FETCH_CATEGORIES_SUCCESS = 'fetch_categories_success',
   FETCH_CATEGORIES_ERROR = 'fetch_categories_error',
@@ -16,6 +21,15 @@ export enum ActionType {
   UPDATE_FAVORITE_START = 'update_favorite_start',
   UPDATE_FAVORITE_SUCCESS = 'update_favorite_success',
   UPDATE_FAVORITE_ERROR = 'update_favorite_error',
+  FETCH_DOCUMENTS_START = 'fetch_documents_start',
+  FETCH_DOCUMENTS_SUCCESS = 'fetch_documents_success',
+  FETCH_DOCUMENTS_ERROR = 'fetch_documents_error',
+  ADD_DOCUMENTS_START = 'add_documents_start',
+  ADD_DOCUMENTS_SUCCESS = 'add_documents_success',
+  ADD_DOCUMENTS_ERROR = 'add_documents_error',
+  DELETE_DOCUMENTS_START = 'delete_documents_start',
+  DELETE_DOCUMENTS_SUCCESS = 'delete_documents_success',
+  DELETE_DOCUMENTS_ERROR = 'delete_documents_error',
   LIKE_ADVERT = 'like_advert',
   UNLIKE_ADVERT = 'unlike_advert',
   ADD_ADVERT = 'add_advert',
@@ -34,6 +48,25 @@ interface FetchAdvertsSuccessAction {
 
 interface FetchAdvertsErrorAction {
   type: ActionType.FETCH_ADVERTS_ERROR;
+  payload: string;
+}
+
+interface SetRecommendationAction {
+  type: ActionType.SET_RECOMMENDATION;
+  payload: any;
+}
+
+interface FetchSingleAdvertStartAction {
+  type: ActionType.FETCH_SINGLE_ADVERT_START;
+}
+
+interface FetchSingleAdvertSuccessAction {
+  type: ActionType.FETCH_SINGLE_ADVERT_SUCCESS;
+  payload: Adverts;
+}
+
+interface FetchSingleAdvertErrorAction {
+  type: ActionType.FETCH_SINGLE_ADVERT_ERROR;
   payload: string;
 }
 
@@ -83,17 +116,56 @@ interface UpdateFavoritesStart {
   type: ActionType.UPDATE_FAVORITE_START;
 }
 
-
-interface UpdateFavoritesSuccess{
+interface UpdateFavoritesSuccess {
   type: ActionType.UPDATE_FAVORITE_SUCCESS;
   payload: any;
 }
 
-interface UpdateFavoritesError{
+interface UpdateFavoritesError {
   type: ActionType.UPDATE_FAVORITE_ERROR;
   payload: string;
 }
 
+interface FetchDocumentsStartAction {
+  type: ActionType.FETCH_DOCUMENTS_START;
+}
+
+interface FetchDocumentsSuccessAction {
+  type: ActionType.FETCH_DOCUMENTS_SUCCESS;
+  payload: any;
+}
+
+interface FetchDocumentsErrorAction {
+  type: ActionType.FETCH_DOCUMENTS_ERROR;
+  payload: string;
+}
+
+interface AddDocumentsStartAction {
+  type: ActionType.ADD_DOCUMENTS_START;
+}
+
+interface AddDocumentsSuccessAction {
+  type: ActionType.ADD_DOCUMENTS_SUCCESS;
+  payload: any;
+}
+
+interface AddDocumentsErrorAction {
+  type: ActionType.ADD_DOCUMENTS_ERROR;
+  payload: string;
+}
+
+interface DeleteDocumentsStartAction {
+  type: ActionType.DELETE_DOCUMENTS_START;
+}
+
+interface DeleteDocumentsSuccessAction {
+  type: ActionType.DELETE_DOCUMENTS_SUCCESS;
+}
+
+interface DeleteDocumentsErrorAction {
+  type: ActionType.DELETE_DOCUMENTS_ERROR;
+  payload: string;
+}
 interface LikeAdvertAction {
   type: ActionType.LIKE_ADVERT;
   payload: string;
@@ -116,6 +188,10 @@ export type AdvertsAction =
   | FetchAdvertsStartAction
   | FetchAdvertsSuccessAction
   | FetchAdvertsErrorAction
+  | SetRecommendationAction
+  | FetchSingleAdvertStartAction
+  | FetchSingleAdvertSuccessAction
+  | FetchSingleAdvertErrorAction
   | FetchCategoriesStartAction
   | FetchCategoriesSuccessAction
   | FetchCategoriesErrorAction
@@ -132,4 +208,13 @@ export type AdvertsAction =
   | UpdateAccountType
   | UpdateFavoritesStart
   | UpdateFavoritesSuccess
-  | UpdateFavoritesError;
+  | UpdateFavoritesError
+  | FetchDocumentsStartAction
+  | FetchDocumentsSuccessAction
+  | FetchDocumentsErrorAction
+  | AddDocumentsStartAction
+  | AddDocumentsSuccessAction
+  | AddDocumentsErrorAction
+  | DeleteDocumentsStartAction
+  | DeleteDocumentsSuccessAction
+  | DeleteDocumentsErrorAction;

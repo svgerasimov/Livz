@@ -1,21 +1,27 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Text, View, ImageBackground} from 'react-native';
 import {Screen, Row} from '../components';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import {AdvertCard} from '../components/AdvertCard';
-import {useTypedSelector} from '../hooks';
-import {favoriteIdsSelector} from '../state/selectors';
+import {useActions, useTypedSelector} from '../hooks';
+import {getFavorites} from '../state/selectors';
 import {rems} from '../config';
 import FastImage from 'react-native-fast-image';
 
 export const FavoritesScreen = () => {
-  const ids = useTypedSelector(favoriteIdsSelector);
+  const {fetchFavorite} = useActions();
+  const ids = useTypedSelector(getFavorites);
+
+  useEffect(() => {
+    fetchFavorite();
+  }, []);
+
   return (
     <Screen style={styles.screen}>
       {ids.length > 0 ? (
         ids.map((id) => (
           <Row key={id} style={styles.row}>
-            <AdvertCard id={id} />
+            <AdvertCard advert={id} />
           </Row>
         ))
       ) : (

@@ -2,10 +2,18 @@ import React from 'react';
 import {View, TouchableOpacity, Text} from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {Routes} from './routes';
-import {ProfileScreen, FeedScreen, HelpScreen, AboutAppScreen, LicenseAgreementScreen, EditProfileScreen} from '../screens';
+import {
+  ProfileScreen,
+  FeedScreen,
+  HelpScreen,
+  AboutAppScreen,
+  LicenseAgreementScreen,
+  EditProfileScreen,
+} from '../screens';
 import {Header} from '../components/Header';
 import {ArrowLeftIcon, HomeIcon, ProfileIcon} from '../components/svg/icons';
 import {withTouchable} from '../HOC';
+import {NewsScreen} from '../screens/NewsScreen';
 
 export type ProfileParamList = {
   [Routes.FEED]: undefined;
@@ -14,6 +22,7 @@ export type ProfileParamList = {
   [Routes.ABOUT_APP]: undefined;
   [Routes.LICENSE_AGREEMENT]: undefined;
   [Routes.EDIT_PROFILE]: undefined;
+  [Routes.NEWS]: {id: number};
 };
 const Stack = createStackNavigator<ProfileParamList>();
 const TouchableHomeIcon = withTouchable(HomeIcon);
@@ -65,6 +74,29 @@ export function ProfileStack() {
               //   leftButton={
               //     <TouchableHomeIcon color="white" onPress={() => {}} />
               //   }
+              rightButton={
+                <PersonalAccount
+                  onPress={() => props.navigation.navigate(Routes.PROFILE)}
+                />
+              }
+              {...props}
+            />
+          ),
+        }}
+      />
+      <Stack.Screen
+        name={Routes.NEWS}
+        component={NewsScreen}
+        options={{
+          title: 'Новости',
+          header: (props) => (
+            <Header
+              leftButton={
+                <ArrowLeftIcon
+                  color="white"
+                  onPress={() => props.navigation.goBack()}
+                />
+              }
               rightButton={
                 <PersonalAccount
                   onPress={() => props.navigation.navigate(Routes.PROFILE)}

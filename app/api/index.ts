@@ -8,6 +8,5 @@ export const apiClinet = axios.create({
   responseType: 'json',
   headers: {
     'Content-Type': 'application/json',
-    Authorization: store.getState().auth.token,
   },
 });

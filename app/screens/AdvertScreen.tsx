@@ -1,4 +1,4 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import {
   Text,
   View,
@@ -23,7 +23,7 @@ import {Routes} from '../navigation/routes';
 import {Colors, rems, size} from '../config';
 import {withTouchable} from '../HOC';
 import {AdvertCard} from '../components/AdvertCard';
-import { InputField } from '../components'
+import {InputField} from '../components';
 import {convertRubToUsd} from '../utility';
 import {
   ShareIcon,
@@ -108,26 +108,34 @@ const ApartmentDescriptionItem: React.FC<ApartmentDescriptionItemProps> = ({
   </View>
 );
 
+function isJson(str) {
+  try {
+    JSON.parse(str);
+  } catch (e) {
+    return false;
+  }
+  return true;
+}
+
 export const AdvertScreen: React.FC<AdvertScreenProps> = ({
   navigation,
   route,
 }) => {
-  
   const ref = useRef(null!);
   const premiumOffersRef = useRef(null!);
   const similarAdvertsRef = useRef(null!);
   const {advertId} = route.params;
   const selectedAdvert = useTypedSelector(
-    (state) => state.advertisements.data[advertId],
+    (state) => state.advertisements.advert,
   );
+  const metros = useTypedSelector((state) => state.metro.data);
   const premiumAdvertIds = useTypedSelector(premiumAdvertsIdsSelector);
-  const adverts = useTypedSelector((state) => state.advertisements.data);
   const [activeIndex, setActiveIndex] = useState(0);
   const [activePremiumAdvertIndex, setActivePremiumAdvertIndex] = useState(0);
   const [activeSimilarAdvertIndex, setActiveSimilarAdvertIndex] = useState(0);
-  const {LikeAdvert, UnlikeAdvert} = useActions();
-  const isFavorite = useTypedSelector(
-    (state) => state.advertisements.data[advertId].isFavorite,
+  const {UpdateFavorite, fetchSingleAdvert} = useActions();
+  const isFavorite = useTypedSelector((state) =>
+    state.advertisements.favorite.includes((el) => el.id === advertId),
   );
   const [isMapCollapsed, setMapCollapsed] = useState(false);
   const [isDescriptionCollapsed, seDescriptionCollapsed] = useState(true);
@@ -136,11 +144,17 @@ export const AdvertScreen: React.FC<AdvertScreenProps> = ({
     SecuritiesOfApartment,
   ) as (keyof typeof SecuritiesOfApartment)[];
 
+  useEffect(() => {
+    fetchSingleAdvert(advertId);
+  }, [advertId]);
+
+  console.log(selectedAdvert);
+
   const imageSource = (photo: any) => {
     if (typeof photo === 'number') {
       return photo;
     }
-    return {uri: photo};
+    return {uri: `https://livz.ru/${photo}`};
   };
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
@@ -151,7 +165,7 @@ export const AdvertScreen: React.FC<AdvertScreenProps> = ({
       <>
         <ImageBackground
           style={styles.imageBackground}
-          source={imageSource(item)}>
+          source={imageSource(item.imagePublic)}>
           <LinearGradient
             style={{flex: 1}}
             colors={['rgba(26, 28, 31, 0.21)', 'rgba(26, 28, 31, 0.53)']}>
@@ -169,7 +183,7 @@ export const AdvertScreen: React.FC<AdvertScreenProps> = ({
                 // color={isFavorite ? Colors.white : Colors.primaryColor}
                 onPress={() => {
                   // isFavorite ? UnlikeAdvert(advertId) : LikeAdvert(advertId);
-                  isFavorite ? UnlikeAdvert(advertId) : LikeAdvert(advertId);
+                  UpdateFavorite(advertId);
                 }}
               />
             </View>
@@ -188,8 +202,8 @@ export const AdvertScreen: React.FC<AdvertScreenProps> = ({
 
   const renderPremiumAdvert = ({item}: any) => {
     return (
-      <View style={{marginRight: 10, marginTop: 0,}}>
-        <AdvertCard id={item} />
+      <View style={{marginRight: 10, marginTop: 0}}>
+        <AdvertCard advert={item} />
       </View>
     );
   };
@@ -197,11 +211,14 @@ export const AdvertScreen: React.FC<AdvertScreenProps> = ({
   const renderSimilarAdvert = ({item}: any) => {
     return (
       <View style={{marginRight: 10}}>
-        <AdvertCard id={item} />
+        <AdvertCard advert={item} />
       </View>
     );
   };
 
+  if (!selectedAdvert) {
+    return <View></View>;
+  }
   return (
     <SafeAreaView
       style={{flex: 1, paddingTop: 48, backgroundColor: Colors.white}}>
@@ -220,7 +237,7 @@ export const AdvertScreen: React.FC<AdvertScreenProps> = ({
             loop
             layout={'default'}
             ref={ref}
-            data={selectedAdvert.photos}
+            data={selectedAdvert.images}
             sliderWidth={width}
             itemWidth={width}
             renderItem={_renderItem}
@@ -228,7 +245,7 @@ export const AdvertScreen: React.FC<AdvertScreenProps> = ({
           />
 
           <Pagination
-            dotsLength={selectedAdvert.photos.length}
+            dotsLength={selectedAdvert.images.length}
             activeDotIndex={activeIndex}
             containerStyle={{
               position: 'absolute',
@@ -266,7 +283,7 @@ export const AdvertScreen: React.FC<AdvertScreenProps> = ({
                 fontSize: 12,
                 color: '#656565',
               }}>
-              {selectedAdvert.published}
+              {selectedAdvert.createdAt}
             </Text>
 
             <Circle style={{marginHorizontal: 7}} />
@@ -287,10 +304,10 @@ export const AdvertScreen: React.FC<AdvertScreenProps> = ({
                 color: '#191A1C',
                 marginBottom: 12,
               }}>
-              {selectedAdvert.title}
+              {selectedAdvert.name}
             </Text>
           </Row>
-          <Row>
+          {/* <Row>
             <Text
               style={{
                 fontSize: 13,
@@ -300,7 +317,7 @@ export const AdvertScreen: React.FC<AdvertScreenProps> = ({
               }}>
               {selectedAdvert.developer}
             </Text>
-          </Row>
+          </Row> */}
           <Row
             style={{
               marginBottom: 12,
@@ -348,13 +365,13 @@ export const AdvertScreen: React.FC<AdvertScreenProps> = ({
               }}>
               <MetroIcon />
               <Text style={{marginLeft: 8}}>
-                {selectedAdvert.subwayStation}
+                {metros.find((el) => el.id === selectedAdvert.metroId)?.name}
               </Text>
             </View>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <PointIcon />
               <Text style={{marginLeft: 8}}>
-                {selectedAdvert.publicTransportTripDuration} мин. на транспорте
+                {selectedAdvert.minutesToMetro} мин. на транспорте
               </Text>
             </View>
           </Row>
@@ -368,19 +385,34 @@ export const AdvertScreen: React.FC<AdvertScreenProps> = ({
               flexDirection: 'row',
               marginBottom: 20,
             }}>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-              }}>
-              <HouseIcon />
-              <Text
+            {!!selectedAdvert?.adatributes?.find((a) => a.attributeId === 20)
+              ?.value && (
+              <View
                 style={{
-                  marginLeft: 7,
+                  flexDirection: 'row',
+                  alignItems: 'center',
                 }}>
-                {selectedAdvert.numberOfRooms} комн-кв.
-              </Text>
-            </View>
+                <HouseIcon />
+                <Text
+                  style={{
+                    marginLeft: 7,
+                  }}>
+                  {isJson(
+                    selectedAdvert.adatributes.find((a) => a.attributeId === 20)
+                      ?.value,
+                  )
+                    ? JSON.parse(
+                        selectedAdvert.adatributes.find(
+                          (a) => a.attributeId === 20,
+                        )?.value,
+                      )
+                    : selectedAdvert.adatributes.find(
+                        (a) => a.attributeId === 20,
+                      )?.value}{' '}
+                  комн-кв.
+                </Text>
+              </View>
+            )}
 
             <View
               style={{
@@ -394,7 +426,7 @@ export const AdvertScreen: React.FC<AdvertScreenProps> = ({
                   style={{
                     marginLeft: 7,
                   }}>
-                  {selectedAdvert.totalArea}
+                  {selectedAdvert.area}
                 </Text>
                 <View style={{flexDirection: 'row'}}>
                   <View style={{alignItems: 'flex-end'}}>
@@ -406,21 +438,36 @@ export const AdvertScreen: React.FC<AdvertScreenProps> = ({
                 </View>
               </>
             </View>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                marginLeft: 12,
-              }}>
-              <LadderIcon />
-              <Text
-                style={{
-                  marginLeft: 7,
-                }}>
-                {selectedAdvert.floor}/{selectedAdvert.numberOfFloorsAtBuilding}{' '}
-                этаж
-              </Text>
-            </View>
+            {!!selectedAdvert.adatributes.find((a) => a.attributeId === 20)
+              ?.value ||
+              (!!selectedAdvert.adatributes.find((a) => a.attributeId === 11)
+                ?.value && (
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    marginLeft: 12,
+                  }}>
+                  <LadderIcon />
+                  <Text
+                    style={{
+                      marginLeft: 7,
+                    }}>
+                    {
+                      selectedAdvert.adatributes.find(
+                        (a) => a.attributeId === 11,
+                      ).value
+                    }
+                    /
+                    {
+                      selectedAdvert.adatributes.find(
+                        (a) => a.attributeId === 12,
+                      ).value
+                    }{' '}
+                    этаж
+                  </Text>
+                </View>
+              ))}
           </Row>
 
           <Row style={[styles.cardButtonGroup, styles.row]}>
@@ -446,63 +493,33 @@ export const AdvertScreen: React.FC<AdvertScreenProps> = ({
           </Row>
 
           <Row style={[styles.row]}>
-            <View style={styles.tableRow}>
-              <View style={styles.tableRowPropertyWrapper}>
-                <Text style={styles.tableRowProperty}>Общая площадь:</Text>
-              </View>
-              <View style={styles.tableRowValueWrapper}>
-                <Text style={styles.tableRowValue}>
-                  {selectedAdvert.totalArea}
-                </Text>
+            <View style={[styles.tableRow]}>
+              {selectedAdvert.adatributes.map((a) =>
+                a.attribute?.name ? (
+                  <>
+                    <View style={styles.tableRowPropertyWrapper}>
+                      <Text style={styles.tableRowProperty}>
+                        {a.attribute?.name}
+                      </Text>
+                    </View>
+                    <View style={styles.tableRowValueWrapper}>
+                      <Text style={styles.tableRowValue}>
+                        {isJson(a?.value) ? JSON.parse(a?.value) : a?.value}
+                      </Text>
 
-                <View style={{flexDirection: 'row'}}>
-                  <View style={{alignItems: 'flex-end'}}>
-                    <Text style={{fontSize: 14}}>м</Text>
-                  </View>
-                  <View style={{alignItems: 'flex-start'}}>
-                    <Text style={{fontSize: 10}}>2</Text>
-                  </View>
-                </View>
-              </View>
-            </View>
-            <View style={styles.tableRow}>
-              <View style={styles.tableRowPropertyWrapper}>
-                <Text style={styles.tableRowProperty}>Жилая площадь:</Text>
-              </View>
-              <View style={styles.tableRowValueWrapper}>
-                <Text style={styles.tableRowValue}>
-                  {selectedAdvert.livingArea}
-                </Text>
-
-                <View style={{flexDirection: 'row'}}>
-                  <View style={{alignItems: 'flex-end'}}>
-                    <Text style={{fontSize: 14}}>м</Text>
-                  </View>
-                  <View style={{alignItems: 'flex-start'}}>
-                    <Text style={{fontSize: 10}}>2</Text>
-                  </View>
-                </View>
-              </View>
-            </View>
-            <View style={styles.tableRow}>
-              <View style={styles.tableRowPropertyWrapper}>
-                <Text style={styles.tableRowProperty}>Кол-во комнат:</Text>
-              </View>
-              <View style={styles.tableRowValueWrapper}>
-                <Text style={styles.tableRowValue}>
-                  {selectedAdvert.numberOfRooms}
-                </Text>
-              </View>
-            </View>
-            <View style={styles.tableRow}>
-              <View style={styles.tableRowPropertyWrapper}>
-                <Text style={styles.tableRowProperty}>Этажей:</Text>
-              </View>
-              <View style={styles.tableRowValueWrapper}>
-                <Text style={styles.tableRowValue}>
-                  {selectedAdvert.numberOfFloorsAtBuilding}
-                </Text>
-              </View>
+                      {a.attribute?.prefix && (
+                        <View style={{flexDirection: 'row'}}>
+                          <View style={{alignItems: 'flex-end'}}>
+                            <Text style={{fontSize: 14}}>
+                              {a.attribute?.prefix}
+                            </Text>
+                          </View>
+                        </View>
+                      )}
+                    </View>
+                  </>
+                ) : null,
+              )}
             </View>
           </Row>
 
@@ -528,11 +545,8 @@ export const AdvertScreen: React.FC<AdvertScreenProps> = ({
           </Row>
           <Row style={styles.row}>
             <Text style={styles.title}>Подробное описание</Text>
-            <Text style={styles.content}>
-              Трехэтажный коттедж в стиле Модерн площадью 1832 квадратных метра
-              в поселке Красные Горки, поселение Марушкинское.
-            </Text>
-            <Collapsible collapsed={isDescriptionCollapsed}>
+            <Text style={styles.content}>{selectedAdvert.description}</Text>
+            {/* <Collapsible collapsed={isDescriptionCollapsed}>
               <Text style={styles.content}>
                 Расположен в транспортной доступности районе Новой Москвы: 23 км
                 от МКАД по Киевскому шоссе или 26 км от МКАД по Боровскому
@@ -550,7 +564,7 @@ export const AdvertScreen: React.FC<AdvertScreenProps> = ({
               onPress={() => {
                 seDescriptionCollapsed((prevState) => !prevState);
               }}
-            />
+            /> */}
           </Row>
 
           <Row style={styles.row}>
@@ -559,47 +573,34 @@ export const AdvertScreen: React.FC<AdvertScreenProps> = ({
               <ApartmentDescriptionItem
                 Icon={RestRoomIcon}
                 property="Комнат:"
-                value={5}
-              />
-              <ApartmentDescriptionItem
-                Icon={BedRoomIcon}
-                property="Спален:"
-                value={2}
-              />
-              <ApartmentDescriptionItem
-                Icon={BedRoomIcon}
-                property="Ванных:"
-                value={2}
-              />
-              <ApartmentDescriptionItem
-                Icon={ParkingIcon}
-                property="Паркомест:"
-                value={2}
+                value={
+                  selectedAdvert.adatributes.find((a) => a.attributeId === 20)
+                    ?.value
+                }
               />
             </View>
           </Row>
           <View style={[styles.divider, styles.row]} />
           <Row style={styles.row}>
             <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
-              {securitiesOfApartmentKeys.map((feature) => {
-                if (selectedAdvert[feature]) {
-                  return (
-                    <View
-                      style={{
-                        width: '50%',
-                        marginBottom: 8,
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                      }}
-                      key={feature}>
-                      <CheckIcon style={{marginRight: 8}} />
-                      <Text style={{color: '#4D4F54', fontSize: 13}}>
-                        {SecuritiesOfApartment[feature]}
-                      </Text>
-                    </View>
-                  );
-                }
-                return null;
+              {selectedAdvert.adatributes.map((feature) => {
+                return (
+                  <View
+                    style={{
+                      width: '50%',
+                      marginBottom: 8,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                    }}
+                    key={feature.id}>
+                    <CheckIcon style={{marginRight: 8}} />
+                    <Text style={{color: '#4D4F54', fontSize: 13}}>
+                      {isJson(feature.value)
+                        ? JSON.parse(feature.value)
+                        : feature.value}
+                    </Text>
+                  </View>
+                );
               })}
             </View>
           </Row>
@@ -608,16 +609,19 @@ export const AdvertScreen: React.FC<AdvertScreenProps> = ({
               style={styles.mortgageBrokerButton}
               activeOpacity={0.85}
               onPress={() => {
-                toggleModal()
+                toggleModal();
               }}>
               <View style={{marginRight: 16}}>
                 <WalletIcon />
               </View>
-              <Text style={[styles.mortgageBrokerButtonTitle, {flex: 1, flexWrap: 'wrap'}]}>
+              <Text
+                style={[
+                  styles.mortgageBrokerButtonTitle,
+                  {flex: 1, flexWrap: 'wrap'},
+                ]}>
                 Помощь ипотечного брокера
               </Text>
             </TouchableOpacity>
-           
           </Row>
           <Row style={styles.row}>
             <Text style={styles.title}>Премиум предложения</Text>
@@ -631,7 +635,7 @@ export const AdvertScreen: React.FC<AdvertScreenProps> = ({
                 loop
                 layout={'default'}
                 ref={premiumOffersRef}
-                data={premiumAdvertIds}
+                data={selectedAdvert.premiumAds}
                 sliderWidth={width}
                 itemWidth={width - 20}
                 renderItem={renderPremiumAdvert}
@@ -651,7 +655,7 @@ export const AdvertScreen: React.FC<AdvertScreenProps> = ({
                 loop
                 layout={'default'}
                 ref={similarAdvertsRef}
-                data={Object.keys(adverts)}
+                data={selectedAdvert.similarAds}
                 sliderWidth={width}
                 itemWidth={width - 20}
                 renderItem={renderSimilarAdvert}
@@ -783,8 +787,8 @@ const styles = EStyleSheet.create({
     marginBottom: 20,
   },
   tableRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
     justifyContent: 'space-between',
     marginBottom: 12,
   },

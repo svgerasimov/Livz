@@ -4,7 +4,7 @@ import {createFilters, multiFilter} from '../../utility/filters';
 import {isEmpty} from 'lodash';
 
 const getFilterParams = (state: RootState) => state.filter;
-const getAdverts = (state: RootState) => state.advertisements.data;
+export const getAdverts = (state: RootState) => state.advertisements.data;
 const getCity = (state: RootState) => state.filter.city;
 
 export const filtersSelector = createSelector(

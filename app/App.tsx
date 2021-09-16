@@ -6,7 +6,12 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import {rem} from './config';
 import {MenuProvider} from 'react-native-popup-menu';
 import {RootNavigator} from './navigation/RootNavigator';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
+// import {GoogleSignin} from '@react-native-google-signin/google-signin';
+
+// GoogleSignin.configure({
+//   webClientId: '',
+// });
 
 EStyleSheet.build({
   $rem: rem,
@@ -33,10 +38,9 @@ const App = () => {
   return (
     <Provider store={store}>
       <SafeAreaProvider>
-
-      <MenuProvider>
-        <RootNavigator />
-      </MenuProvider>
+        <MenuProvider>
+          <RootNavigator />
+        </MenuProvider>
       </SafeAreaProvider>
     </Provider>
   );

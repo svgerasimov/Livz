@@ -2,22 +2,22 @@ import produce, {Draft} from 'immer';
 import {AuthAction, ActionType} from '../actions/authActions';
 
 export interface AuthState {
-  auth: boolean;
+  token: string;
 }
 
 const initialState: AuthState = {
-  auth: false,
+  token: '',
 };
 
 export const reducer = produce(
   (draft: Draft<AuthState>, action: AuthAction) => {
     switch (action.type) {
       case ActionType.LOGIN: {
-        draft.auth = true;
+        draft.token = action.payload;
         break;
       }
       case ActionType.LOGOUT: {
-        draft.auth = false;
+        draft.token = '';
         break;
       }
     }

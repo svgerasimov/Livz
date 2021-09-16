@@ -24,7 +24,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
   navigation,
   route,
 }) => {
-  const {login} = useActions();
+  const {login, loginWithoutRegistration} = useActions();
   return (
     <Screen Header={<AuthHeader />} style={styles.screen}>
       <View style={styles.textContainer}>
@@ -49,7 +49,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
       />
       <Button
         type="clear"
-        onPress={login}
+        onPress={loginWithoutRegistration}
         title="Войти без регистрации"
         titleStyle={styles.clearButtonTitle}
         buttonStyle={styles.clearButton}

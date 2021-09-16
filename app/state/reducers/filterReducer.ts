@@ -11,12 +11,13 @@ const initialState: FilterParams = {
   city: null,
   district: null,
   subwayStation: null,
+  filters: [],
 };
 
 export const reducer = produce((draft: Draft<FilterParams>, action: Action) => {
   switch (action.type) {
     case ActionType.SELECT_TYPE_OF_APARTMENT: {
-      draft.type = action.payload;
+      draft.filters = action.payload;
       break;
     }
     case ActionType.SELECT_SORT_OF_APARTMENT: {

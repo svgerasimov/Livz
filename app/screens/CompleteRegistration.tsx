@@ -10,6 +10,7 @@ import {size, globalStyles} from '../config';
 import {Formik, FormikHelpers, Field} from 'formik';
 
 import * as yup from 'yup';
+import {useActions} from '../hooks';
 
 const ValidationSchema = yup.object().shape({
   name: yup.string().required('Необходимо ввести Ваше имя'),
@@ -49,6 +50,8 @@ const initialValues: FormValues = {
 export const CompleteRegistrationScreen: React.FC<ScreenProps> = ({
   navigation,
 }) => {
+  const {register} = useActions();
+
   return (
     <Screen style={{padding: 20}} Header={<AuthHeader />}>
       <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -64,12 +67,12 @@ export const CompleteRegistrationScreen: React.FC<ScreenProps> = ({
           {resetForm, setSubmitting}: FormikHelpers<FormValues>,
         ) => {
           setSubmitting(true);
-          setTimeout(() => {
-            console.log(values);
-            setSubmitting(false);
-            navigation.navigate(Routes.SUCCESSFUL_REGISTRATION);
-            resetForm({values: initialValues});
-          }, 1000);
+          setSubmitting(false);
+          register({password: values.password});
+          navigation.navigate(Routes.SUCCESSFUL_REGISTRATION, {
+            passwords: values.password,
+          });
+          resetForm({values: initialValues});
         }}>
         {({handleSubmit, isValid, isSubmitting}) => {
           return (

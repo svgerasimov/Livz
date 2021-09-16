@@ -1,4 +1,4 @@
-import React, {useRef} from 'react';
+import React, {useState} from 'react';
 import {Text, TouchableOpacity, View, StyleSheet} from 'react-native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RouteProp, useNavigation} from '@react-navigation/native';
@@ -29,6 +29,10 @@ import {useActions} from '../hooks';
 import {delay} from '../utility';
 
 import * as yup from 'yup';
+import {useSelector} from 'react-redux';
+import auth from '@react-native-firebase/auth';
+// import {GoogleSignin} from '@react-native-google-signin/google-signin';
+// import {LoginManager, AccessToken} from 'react-native-fbsdk';
 
 const loginValidationSchema = yup.object().shape({
   emailOrPhone: yup.string().required('Необходимо ввести номер или e-mail'),
@@ -61,6 +65,39 @@ const initialValues: FormValues = {
 
 export const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
   const {login} = useActions();
+  const [isCorrect, setIsCorrect] = useState(true);
+
+  const token = useSelector((state) => state.auth.token);
+
+  // async function onGoogleButtonPress() {
+  //   const {idToken} = await GoogleSignin.signIn();
+  //   const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+
+  //   return auth().signInWithCredential(googleCredential);
+  // }
+
+  // async function onFacebookButtonPress() {
+  //   const result = await LoginManager.logInWithPermissions([
+  //     'public_profile',
+  //     'email',
+  //   ]);
+  //   if (result.isCancelled) {
+  //     throw 'User cancelled the login process';
+  //   }
+
+  //   const data = await AccessToken.getCurrentAccessToken();
+
+  //   if (!data) {
+  //     throw 'Something went wrong obtaining access token';
+  //   }
+
+  //   const facebookCredential = auth.FacebookAuthProvider.credential(
+  //     data.accessToken,
+  //   );
+
+  //   return auth().signInWithCredential(facebookCredential);
+  // }
+
   return (
     <Screen style={{padding: 20}} Header={<AuthHeader />}>
       <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -78,16 +115,13 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
           {resetForm, setSubmitting}: FormikHelpers<FormValues>,
         ) => {
           setSubmitting(true);
-          delay(500)
-            .then((_) => {
-              setSubmitting(false);
-              login();
-            })
-            .then((_) => {
-              setTimeout(() => {
-                resetForm({values: initialValues});
-              }, 500);
-            });
+          setSubmitting(false);
+          login({password: values.password, login: values.emailOrPhone});
+          resetForm({values: initialValues});
+          if (!token) {
+            setIsCorrect(false);
+          }
+
           // setTimeout(() => {
           //   // console.log(values);
           //   setSubmitting(false);
@@ -117,6 +151,19 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
                   inputStyle={styles.input}
                   secureTextEntry
                 />
+                {!isCorrect && (
+                  <Text
+                    style={[
+                      globalStyles.text,
+                      {
+                        marginVertical: 20,
+                        alignSelf: 'center',
+                        color: '#F60A12',
+                      },
+                    ]}>
+                    Неправильный логин или пароль
+                  </Text>
+                )}
               </View>
               <View style={styles.btnContainer}>
                 <Button
@@ -149,25 +196,31 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
       </Text>
       <Row style={styles.row}>
         <View style={styles.iconContainer}>
-          <Social
+          {/* <Social
             containerStyle={styles.social}
             onPress={() => {}}
             color="#5181B8"
             Icon={VkIcon}
-          />
+          /> */}
           <Social
             containerStyle={styles.social}
-            onPress={() => {}}
+            onPress={() => {
+              // onGoogleButtonPress();
+            }}
             color="#EA4335"
             Icon={GoogleIcon}
           />
           <Social
             containerStyle={styles.social}
-            onPress={() => {}}
+            onPress={() => {
+              // onFacebookButtonPress().then(() =>
+              //   console.log('Signed in with Facebook!'),
+              // );
+            }}
             color="#4867AA"
             Icon={FacebookIcon}
           />
-          <Social
+          {/* <Social
             containerStyle={styles.social}
             onPress={() => {}}
             color="#FF9800"
@@ -178,8 +231,8 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
             onPress={() => {}}
             color="#005FF9"
             Icon={MailIcon}
-          />
-          <Social onPress={() => {}} color="#E4E7EC" Icon={DotsIcon} />
+          /> */}
+          {/* <Social onPress={() => {}} color="#E4E7EC" Icon={DotsIcon} /> */}
         </View>
       </Row>
       <Text

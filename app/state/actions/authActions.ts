@@ -5,6 +5,7 @@ export enum ActionType {
 
 interface LoginAction {
   type: ActionType.LOGIN;
+  payload: any;
 }
 
 interface LogoutAction {

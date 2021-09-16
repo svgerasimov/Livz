@@ -26,6 +26,7 @@ interface ScreenProps {
 
 export const SuccessfulRegistrationScreen: React.FC<ScreenProps> = ({
   navigation,
+  route,
 }) => {
   const {login} = useActions();
   return (
@@ -37,7 +38,11 @@ export const SuccessfulRegistrationScreen: React.FC<ScreenProps> = ({
           </Text>
         </Row>
         <Row style={styles.row}>
-          <Button color="dark" title="Продолжить" onPress={() => login()} />
+          <Button
+            color="dark"
+            title="Продолжить"
+            onPress={() => login({password: route.params?.password})}
+          />
         </Row>
       </View>
     </Screen>

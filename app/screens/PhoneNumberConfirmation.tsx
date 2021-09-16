@@ -66,22 +66,9 @@ export const PhoneNumberConfirmationScreen: React.FC<ScreenProps> = ({
           values: FormValues,
           {resetForm, setSubmitting}: FormikHelpers<FormValues>,
         ) => {
-          // setSubmitting(true);
-          // setTimeout(() => {
-          //   navigation.navigate(Routes.COMPLETE_REGISTRATION);
-          //   setSubmitting(false);
-          //   resetForm({values: initialValues});
-          // }, 1000);
-          delay(500)
-            .then((_) => {
-              setSubmitting(false);
-              navigation.navigate(Routes.COMPLETE_REGISTRATION);
-            })
-            .then((_) => {
-              setTimeout(() => {
-                resetForm({values: initialValues});
-              }, 500);
-            });
+          setSubmitting(false);
+          navigation.navigate(Routes.COMPLETE_REGISTRATION);
+          resetForm({values: initialValues});
         }}>
         {({handleSubmit, isValid, isSubmitting}) => {
           return (

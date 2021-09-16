@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, TouchableOpacity} from 'react-native';
+import {Text, View, TouchableOpacity} from 'react-native';
 import {Screen, Separator} from '../components';
 import {SearchIcon, TrashIcon} from '../components/svg/icons';
 import {rems} from '../config';
@@ -7,22 +7,23 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import Swipeout from 'react-native-swipeout';
 import moment from 'moment';
 import {useNavigation} from '@react-navigation/native';
-import { Routes } from '../navigation/routes'
+import {Routes} from '../navigation/routes';
 import 'moment/locale/ru';
+import {useSelector} from 'react-redux';
 
 const ListItem = ({title = '', text = '', Icon = () => null}) => {
   const navigation = useNavigation();
   return (
     <>
       <TouchableOpacity
-      activeOpacity={0.9}
-      onPress={() => {
-        navigation.navigate(Routes.MESSAGES, {
-          title,
-          text,
-          Icon
-        })
-      }}
+        activeOpacity={0.9}
+        onPress={() => {
+          navigation.navigate(Routes.MESSAGES, {
+            title,
+            text,
+            Icon,
+          });
+        }}
         style={{
           flexDirection: 'row',
           alignItems: 'center',
@@ -66,7 +67,7 @@ const ListItem = ({title = '', text = '', Icon = () => null}) => {
       <Separator />
     </>
   );
-} 
+};
 
 const SwipeOutButton = () => (
   <TouchableOpacity
@@ -81,28 +82,20 @@ const SwipeOutButton = () => (
 );
 
 export const NotificationsScreen = () => {
-  const [notifications, setNotifications] = React.useState([
-    {
-      title: 'Мы подобрали подходящие объявления для Вас',
-      Icon: <SearchIcon width={14} height={14} color="white" />,
-      text: 'Мы подобрали подходящие объявления для Вас Мы подобрали подходящие объявления для Вас Мы подобрали подходящие объявления для Вас Мы подобрали подходящие объявления для Вас'
-    },
-    {
-      title: 'Ваше объявление заблокировано',
-      Icon: <SearchIcon width={14} height={14} color="white" />,
-      text: 'Ваше объявление Таунхаус в Подмосковье 158 кв.м заблокировано администратором по причине некорректного заголовка и описания объекта'
-    },
-  ]);
+  const {notification} = useSelector((state) => state.user);
   const swipeoutBtns = [{component: <SwipeOutButton />}];
   return (
     <Screen>
-      {notifications.map((n, i) => {
-        return (
-          <Swipeout backgroundColor="white" right={swipeoutBtns}>
-            <ListItem key={i} title={n.title} text={n.text} Icon={n.Icon} />
-          </Swipeout>
-        );
-      })}
+      {notification.length !== 0 &&
+        notification
+          .filter((notification) => !notification.viewed)
+          .map((n, i) => {
+            return (
+              <Swipeout backgroundColor="white" right={swipeoutBtns}>
+                <ListItem key={i} title={n.name} text={n.text} Icon={n.Icon} />
+              </Swipeout>
+            );
+          })}
     </Screen>
   );
 };

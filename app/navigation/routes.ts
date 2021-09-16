@@ -24,5 +24,6 @@ export enum Routes {
   ABOUT_APP = 'AboutApp',
   LICENSE_AGREEMENT = 'LicenseAgreement',
   EDIT_PROFILE = 'EditProfile',
-  MESSAGES = 'Messages'
+  MESSAGES = 'Messages',
+  NEWS = 'News',
 }

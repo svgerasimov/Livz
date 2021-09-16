@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {StyleSheet, Text, View, Dimensions, ScrollView} from 'react-native';
 import {Screen} from '../components';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -34,15 +34,20 @@ interface ProfileScreenProps {
 }
 
 export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
-  const {logout, setAvatar} = useActions();
+  const {logout, setAvatar, fetchUserData} = useActions();
   const [index, setIndex] = React.useState(0);
   const adverts = useTypedSelector((state) => state.advertisements.data);
   const avatar = useTypedSelector((state) => state.user.avatar);
+  const userData = useTypedSelector((state) => state.user.data);
   const [routes] = React.useState([
     {key: 'active', title: 'Активные (4)'},
     {key: 'onModeration', title: 'На модерации (2)'},
     {key: 'blocked', title: 'Заблокированы (1)'},
   ]);
+
+  useEffect(() => {
+    fetchUserData();
+  }, []);
 
   const Route = () => {
     return (
@@ -51,9 +56,9 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
         showsVerticalScrollIndicator={false}
         bounces={false}
         alwaysBounceVertical={false}> */}
-        {Object.keys(adverts).map((id) => (
-          <View style={{marginBottom: 20}} key={id}>
-            <ProfileAdvertCard id={id} />
+        {userData.ads.map((el) => (
+          <View style={{marginBottom: 20}} key={el.id}>
+            <ProfileAdvertCard advert={el} />
           </View>
         ))}
       </View>
@@ -89,6 +94,9 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
     />
   );
 
+  if (!userData) {
+    return <View />
+  }
   return (
     <Screen style={styles.screen}>
       <ScrollView
@@ -143,10 +151,10 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
 
           <View style={{paddingLeft: 16}}>
             <Text style={{marginBottom: 2, fontSize: 20, color: '#191A1C'}}>
-              Владимир
+              {userData?.name}
             </Text>
             <Text style={{marginBottom: 3, fontSize: 15, color: '#191A1C'}}>
-              +7 (495) 787 41 21
+              {userData?.phone}
             </Text>
             <Text
               style={{
@@ -154,7 +162,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                 textDecorationLine: 'underline',
                 marginBottom: 12,
               }}>
-              vladimir.velikiy@gmail.com
+              {userData?.email}
             </Text>
             <View style={{flexDirection: 'row'}}>
               <Button
@@ -163,7 +171,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
                 color="dark"
                 title="Редактировать"
                 onPress={() => {
-                  // navigation.navigate(Routes.EDIT_PROFILE);
+                  navigation.navigate(Routes.EDIT_PROFILE);
                 }}
               />
               <Button
@@ -258,9 +266,9 @@ const styles = EStyleSheet.create({
     color: '#979BA2',
   },
   signOutBtn: {
-    width: rems[90]
+    width: rems[90],
   },
   editBtn: {
-    width: rems[130]
-  }
+    width: rems[130],
+  },
 });

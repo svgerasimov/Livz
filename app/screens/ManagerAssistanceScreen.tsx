@@ -7,6 +7,7 @@ import {NewAdParamList} from '../navigation/NewAdStack';
 import {Routes} from '../navigation/routes';
 import {Button, Screen, Row} from '../components';
 import {rems, Colors} from '../config';
+import {useActions} from '../hooks';
 
 type ScreenNavigationProp = StackNavigationProp<
   NewAdParamList,
@@ -22,6 +23,8 @@ interface ScreenProps {
 export const ManagerAssistanceScreen: React.FC<ScreenProps> = ({
   navigation,
 }) => {
+  const {AddApplication} = useActions();
+
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   return (
@@ -57,6 +60,7 @@ export const ManagerAssistanceScreen: React.FC<ScreenProps> = ({
             buttonStyle={{width: 275}}
             title="Оставить заявку"
             onPress={() => {
+              AddApplication(phone, 'needCall');
               setName('');
               setPhone('');
             }}

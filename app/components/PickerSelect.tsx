@@ -1,5 +1,10 @@
 import React, {useRef} from 'react';
-import {Text, View, TouchableWithoutFeedback} from 'react-native';
+import {
+  Text,
+  View,
+  TouchableWithoutFeedback,
+  TouchableOpacity,
+} from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import {ArrowRightIcon} from '../components/svg/icons/ArrowRight';
@@ -51,28 +56,25 @@ export const PickerSelect: React.FC<PickerSelectProps> = ({
   return (
     <View style={styles.container}>
       <View style={styles.selectPickerContainer}>
-        <Text style={styles.label}>{label}</Text>
-        <RNPickerSelect
-          value={item}
-          onValueChange={(value) => onValueChanged(value)}
-          items={data}
-          InputAccessoryView={InputAccessoryView}
-          ref={ref}
-          style={pickerSelectStyles}
-          placeholder={{
-            label: `${placeholder}...`,
-            value: null,
-            color: '#9EA0A4',
-          }}
-        />
-      </View>
-
-      <View style={styles.iconContainer}>
-        <TouchableArrowRightIcon
+        <TouchableOpacity
           onPress={() => {
             ref.current?.togglePicker(true);
-          }}
-        />
+          }}>
+          <Text style={styles.label}>{label}</Text>
+          <RNPickerSelect
+            value={item}
+            onValueChange={(value) => onValueChanged(value)}
+            items={data}
+            InputAccessoryView={InputAccessoryView}
+            ref={ref}
+            style={pickerSelectStyles}
+            placeholder={{
+              label: `${placeholder}...`,
+              value: null,
+              color: '#9EA0A4',
+            }}
+          />
+        </TouchableOpacity>
       </View>
     </View>
   );

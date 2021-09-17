@@ -8,7 +8,7 @@ import {
   Dimensions,
   TouchableOpacity,
 } from 'react-native';
-import {RouteProp} from '@react-navigation/native';
+import {RouteProp, useRoute} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
@@ -59,6 +59,7 @@ export const SearchAdvertsListScreen: React.FC<SearchAdvertsListScreenProps> = (
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
+  const route = useRoute();
 
   // const sortingHandler = () => {
   //   const ads = Object.values(adverts);
@@ -103,6 +104,9 @@ export const SearchAdvertsListScreen: React.FC<SearchAdvertsListScreenProps> = (
       </View>
     );
   };
+
+  console.log(route, 'params');
+
   return (
     <Screen style={styles.screen}>
       {/* {error && <Text>{error}</Text>}
@@ -144,7 +148,7 @@ export const SearchAdvertsListScreen: React.FC<SearchAdvertsListScreenProps> = (
         data={
           !!sortedAdverts
             ? sortedAdverts
-            : filteredAdverts.length !== 0
+            : route.params?.isFilter
             ? filteredAdverts
             : adverts
         }

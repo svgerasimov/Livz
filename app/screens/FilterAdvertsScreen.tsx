@@ -93,7 +93,7 @@ export const FilterAdvertsScreen: React.FC<FilterAdvertsScreenProps> = ({
                 label="Тип недвижимости"
                 onValueChanged={(value) => {
                   fetchAttributes(value);
-                  fetchAdverts({...filters, categoryId: value}, true);
+                  fetchAdverts({...filters, category_id: value}, true);
                 }}
                 placeholder="Выберите тип недвижимости"
               />
@@ -523,7 +523,11 @@ export const FilterAdvertsScreen: React.FC<FilterAdvertsScreenProps> = ({
           buttonStyle={styles.btnStyle}
           onPress={() => {
             SetRecommendations({filters}, true);
-            navigation.goBack();
+            navigation.navigate({
+              name: Routes.SEARCH_ADVERTS_LIST_MODE,
+              params: {isFilter: true},
+              key: Routes.SEARCH,
+            });
           }}
           title="Применить фильтры"
         />

@@ -34,7 +34,7 @@ import {useSelector} from 'react-redux';
 import {Routes} from '../navigation/routes';
 import {useNavigation} from '@react-navigation/native';
 import {apiClinet} from '../api';
-import { SetRecommendations } from '../state/action-creators';
+import {SetRecommendations} from '../state/action-creators';
 
 const validationSchema = yup.object().shape({
   name: yup.string().required('Необходимо ввести Ваше имя'),
@@ -115,7 +115,7 @@ export const FeedScreen = () => {
 
   let CATEGORIES: Category[];
   if (categories) {
-    CATEGORIES = [...categories.filter((el) => el.popular)];
+    CATEGORIES = categories;
   }
 
   let NEWS: Category[];
@@ -132,9 +132,9 @@ export const FeedScreen = () => {
     SetRecommendations(false);
   }, []);
 
-  const toggleModal = () => {
-    setModalVisible(!isModalVisible);
-  };
+  // const toggleModal = () => {
+  //   setModalVisible(!isModalVisible);
+  // };
 
   return (
     <Screen style={styles.screen}>
@@ -167,11 +167,21 @@ export const FeedScreen = () => {
                 horizontal
                 data={CATEGORIES}
                 renderItem={({item}) => (
-                  <FlatListItem
-                    item={item}
-                    containerStyle={styles.cardContainerCategories}
-                    titleStyle={styles.categoriesCardTitle}
-                  />
+                  <TouchableOpacity
+                    onPress={() => {
+                      fetchAdverts({category_id: item.id}, true);
+                      navigation.navigate({
+                        name: Routes.SEARCH_ADVERTS_LIST_MODE,
+                        params: {isFilter: true},
+                        key: Routes.SEARCH,
+                      });
+                    }}>
+                    <FlatListItem
+                      item={item}
+                      containerStyle={styles.cardContainerCategories}
+                      titleStyle={styles.categoriesCardTitle}
+                    />
+                  </TouchableOpacity>
                 )}
               />
             </Row>

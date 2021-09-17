@@ -38,11 +38,11 @@ interface AdvertCardProps {
 
 export const ProfileAdvertCard: React.FC<AdvertCardProps> = ({advert}) => {
   const navigation = useNavigation();
-  const {LikeAdvert, UnlikeAdvert} = useActions();
-  const isFavorite = useTypedSelector(
-    (state) =>
-      state.advertisements.data.find((el) => el.id === advert.id).isFavorite,
-  );
+  // const {LikeAdvert, UnlikeAdvert} = useActions();
+  // const isFavorite = useTypedSelector(
+  //   (state) =>
+  //     state.advertisements.data.find((el) => el.id === advert.id)?.isFavorite,
+  // );
   const [isModalVisible, setModalVisible] = useState(false);
 
   const toggleModal = () => {

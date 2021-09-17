@@ -38,7 +38,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
   const [index, setIndex] = React.useState(0);
   const adverts = useTypedSelector((state) => state.advertisements.data);
   const avatar = useTypedSelector((state) => state.user.avatar);
-  const userData = useTypedSelector((state) => state.user.data);
+  const userData = useTypedSelector((state) => state.user.user);
   const [routes] = React.useState([
     {key: 'active', title: 'Активные (4)'},
     {key: 'onModeration', title: 'На модерации (2)'},
@@ -56,11 +56,12 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
         showsVerticalScrollIndicator={false}
         bounces={false}
         alwaysBounceVertical={false}> */}
-        {userData.ads.map((el) => (
-          <View style={{marginBottom: 20}} key={el.id}>
-            <ProfileAdvertCard advert={el} />
-          </View>
-        ))}
+        {userData.ads &&
+          userData.ads.map((el) => (
+            <View style={{marginBottom: 20}} key={el.id}>
+              <ProfileAdvertCard advert={el} />
+            </View>
+          ))}
       </View>
       // </ScrollView>
     );
@@ -95,7 +96,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
   );
 
   if (!userData) {
-    return <View />
+    return <View />;
   }
   return (
     <Screen style={styles.screen}>

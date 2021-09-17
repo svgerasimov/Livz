@@ -13,7 +13,7 @@ import {
 import {Button, Screen, AuthHeader, Row} from '../components';
 import {Colors, size} from '../config';
 import {StackNavigationProp} from '@react-navigation/stack';
-import {RouteProp, useRoute} from '@react-navigation/native';
+import {RouteProp, useRoute, useNavigation} from '@react-navigation/native';
 import {AuthStackParamList} from '../navigation/AuthNavigator';
 import {Routes} from '../navigation/routes';
 import {useActions} from '../hooks';
@@ -22,6 +22,7 @@ import LinearGradient from 'react-native-linear-gradient';
 
 export const NewsScreen = ({}) => {
   const route = useRoute();
+  const navigation = useNavigation();
   const news = useSelector((state) =>
     state.news.news.find((el) => el.id === route.params.id),
   );

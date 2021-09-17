@@ -115,7 +115,8 @@ export const FeedScreen = () => {
 
   let CATEGORIES: Category[];
   if (categories) {
-    CATEGORIES = categories;
+    CATEGORIES = [];
+    categories.forEach((el) => CATEGORIES.push(...el.children));
   }
 
   let NEWS: Category[];
@@ -170,10 +171,9 @@ export const FeedScreen = () => {
                   <TouchableOpacity
                     onPress={() => {
                       fetchAdverts({category_id: item.id}, true);
-                      navigation.navigate({
-                        name: Routes.SEARCH_ADVERTS_LIST_MODE,
+                      navigation.navigate(Routes.SEARCH, {
+                        screen: Routes.SEARCH_ADVERTS_LIST_MODE,
                         params: {isFilter: true},
-                        key: Routes.SEARCH,
                       });
                     }}>
                     <FlatListItem

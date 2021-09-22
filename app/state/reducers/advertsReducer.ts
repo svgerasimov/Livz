@@ -58,6 +58,10 @@ export const reducer = produce(
         draft.recommendation = action.payload;
         break;
       }
+      case ActionType.FETCH_RECOMMENDATIONS: {
+        draft.recommendation = action.payload;
+        break;
+      }
       case ActionType.FETCH_SINGLE_ADVERT_START: {
         draft.loading = true;
         break;

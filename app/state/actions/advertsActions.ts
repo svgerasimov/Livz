@@ -4,8 +4,6 @@ export enum ActionType {
   FETCH_ADVERTS_START = 'fetch_adverts_start',
   FETCH_ADVERTS_SUCCESS = 'fetch_adverts_success',
   FETCH_ADVERTS_ERROR = 'fetch_adverts_error',
-  SET_RECOMMENDATION = 'set_recommendation',
-  SET_RECOMMENDATION_START = 'set_recommendation_start',
   FETCH_SINGLE_ADVERT_START = 'fetch_single_advert_start',
   FETCH_SINGLE_ADVERT_SUCCESS = 'fetch_single_advert_success',
   FETCH_SINGLE_ADVERT_ERROR = 'fetch_single_advert_error',
@@ -21,6 +19,8 @@ export enum ActionType {
   UPDATE_FAVORITE_START = 'update_favorite_start',
   UPDATE_FAVORITE_SUCCESS = 'update_favorite_success',
   UPDATE_FAVORITE_ERROR = 'update_favorite_error',
+  FETCH_RECOMMENDATIONS = 'fetch_recomendations',
+  SET_RECOMMENDATION = 'set_recommendation',
   FETCH_DOCUMENTS_START = 'fetch_documents_start',
   FETCH_DOCUMENTS_SUCCESS = 'fetch_documents_success',
   FETCH_DOCUMENTS_ERROR = 'fetch_documents_error',
@@ -53,6 +53,11 @@ interface FetchAdvertsErrorAction {
 
 interface SetRecommendationAction {
   type: ActionType.SET_RECOMMENDATION;
+  payload: any;
+}
+
+interface FetchRecommendationsAction {
+  type: ActionType.FETCH_RECOMMENDATIONS;
   payload: any;
 }
 

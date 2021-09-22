@@ -769,9 +769,7 @@ export const NewAdScreen = () => {
                           <Text style={styles.label}>{attributeEl.name}</Text>
                           <View
                             style={{
-                              flexDirection: 'row',
-                              alignItems: 'center',
-                              justifyContent: 'space-between',
+                              flexDirection: 'column',
                               marginTop: 5,
                             }}>
                             {JSON.parse(attributeEl.values).map((el, i) => (

@@ -32,8 +32,13 @@ export const HowToAddAdvertScreen: React.FC<FilterAdvertsScreenProps> = ({
           Добавить объект:{' '}
         </Text>
         <Button
-          color="dark"
-          buttonStyle={{width: '100%', marginBottom: 15}}
+          color="undefined"
+          buttonStyle={{
+            width: '100%',
+            marginBottom: 15,
+            backgroundColor: '#65AB3E',
+            borderColor: 'transparent',
+          }}
           title="Добавить самостоятельно"
           onPress={() => navigation.navigate(Routes.NEWAD)}
         />

@@ -180,7 +180,7 @@ export const HelpScreen = ({navigation}) => {
               flex: 1, 
               flexWrap: 'wrap'
             }}>
-            Не получается зарегестрироваться в приложенииsdfsdfsdasdasdasdasdasdass?
+            Не получается зарегестрироваться в приложении?
           </Text>
           <View
             style={{

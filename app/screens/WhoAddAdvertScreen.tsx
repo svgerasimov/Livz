@@ -7,8 +7,9 @@ import {NewAdParamList} from '../navigation/NewAdStack';
 import {Routes} from '../navigation/routes';
 import {Button, Screen, Row, ButtonGroup} from '../components';
 import {rems} from '../config';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {UpdateAccountType} from '../state/action-creators/advertsActionCreators';
+import {useActions} from '../hooks';
 
 type ScreenNavigationProp = StackNavigationProp<
   NewAdParamList,
@@ -25,7 +26,15 @@ const roles = ['Агент', 'Собственник'] as const;
 
 export const WhoAddAdvertScreen: React.FC<ScreenProps> = ({navigation}) => {
   const dispatch = useDispatch();
+  const token = useSelector((state) => state.auth.token);
+  const {login} = useActions();
   const [roleIndex, setRoleIndex] = useState();
+
+  useEffect(() => {
+    if (token === 'unauthorized') {
+      login(undefined, true);
+    }
+  }, []);
 
   return (
     <Screen style={styles.screen}>

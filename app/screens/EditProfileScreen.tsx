@@ -59,7 +59,7 @@ const initialValues: FormValues = {
 
 export const EditProfileScreen: React.FC<ScreenProps> = ({navigation}) => {
   const {UpdateUserData} = useActions();
-  const userData = useSelector((state) => state.user.data);
+  const userData = useSelector((state) => state.user.user);
 
   return (
     <Screen style={{padding: 20}}>
@@ -93,7 +93,7 @@ export const EditProfileScreen: React.FC<ScreenProps> = ({navigation}) => {
                     inputContainerStyle={styles.inputContainer}
                     component={InputField}
                     placeholder="Имя"
-                    defaultValue={userData.name}
+                    defaultValue={userData?.name}
                   />
                   <Text style={styles.label}>Фамилия</Text>
                   <Field
@@ -103,7 +103,7 @@ export const EditProfileScreen: React.FC<ScreenProps> = ({navigation}) => {
                     inputContainerStyle={styles.inputContainer}
                     component={InputField}
                     placeholder="Фамилия"
-                    defaultValue={userData.lastName}
+                    defaultValue={userData?.lastName}
                   />
                   <Text style={styles.label}>Дата рождения</Text>
                   <Field
@@ -113,7 +113,7 @@ export const EditProfileScreen: React.FC<ScreenProps> = ({navigation}) => {
                     inputContainerStyle={styles.inputContainer}
                     component={InputField}
                     placeholder="Дата рождения"
-                    defaultValue={userData.dob}
+                    defaultValue={userData?.dob}
                   />
                   <Text style={styles.bigLabel}>Контактные данные</Text>
                   <Text style={styles.label}>Телефон</Text>
@@ -124,7 +124,7 @@ export const EditProfileScreen: React.FC<ScreenProps> = ({navigation}) => {
                     inputContainerStyle={styles.inputContainer}
                     component={InputField}
                     placeholder="Телефон"
-                    defaultValue={userData.phone}
+                    defaultValue={userData?.phone}
                   />
                   <Text style={styles.label}>Email</Text>
                   <Field
@@ -134,7 +134,7 @@ export const EditProfileScreen: React.FC<ScreenProps> = ({navigation}) => {
                     inputContainerStyle={styles.inputContainer}
                     component={InputField}
                     placeholder="Email"
-                    defaultValue={userData.email}
+                    defaultValue={userData?.email}
                   />
                   <Text style={styles.bigLabel}>Смена пароля</Text>
                   <Text style={styles.label}>Текущий пароль</Text>

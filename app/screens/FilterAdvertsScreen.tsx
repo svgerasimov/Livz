@@ -52,7 +52,7 @@ export const FilterAdvertsScreen: React.FC<FilterAdvertsScreenProps> = ({
   let sortsOfApartment = [];
 
   useEffect(() => {
-    fetchAdverts({categoryId: 0, attributes: []}, true);
+    fetchAdverts({category_id: null, attributes: []}, true);
     if (apartmentType) {
       sortsOfApartment = [
         ...categories.find((el) => el.id === apartmentType).children,
@@ -60,6 +60,12 @@ export const FilterAdvertsScreen: React.FC<FilterAdvertsScreenProps> = ({
       setApartmentSorts(sortsOfApartment);
     }
   }, [apartmentType]);
+
+  // useEffect(() => {
+  //   if (!filters?.category_id) {
+  //     fetchAdverts({category_id: null, attributes: []}, true);
+  //   }
+  // }, [filters?.category_id]);
 
   return (
     <Screen style={styles.screen}>
@@ -85,7 +91,7 @@ export const FilterAdvertsScreen: React.FC<FilterAdvertsScreenProps> = ({
           <>
             <Row style={styles.row}>
               <PickerSelect
-                item={filters.categoryId}
+                item={filters.category_id}
                 data={apartmentSorts.map((option) => ({
                   label: option.name,
                   value: option.id,
@@ -224,14 +230,26 @@ export const FilterAdvertsScreen: React.FC<FilterAdvertsScreenProps> = ({
                                 }
                                 onChangeText={(value) => {
                                   let ad = filters;
-                                  ad.attributes[
+                                  if (
                                     ad.attributes.findIndex(
                                       (a) => a.attribute_id === attributeEl.id,
                                     )
-                                  ] = {
-                                    attribute_id: attributeEl.id,
-                                    value: value,
-                                  };
+                                  ) {
+                                    ad.attributes[
+                                      ad.attributes.findIndex(
+                                        (a) =>
+                                          a.attribute_id === attributeEl.id,
+                                      )
+                                    ] = {
+                                      attribute_id: attributeEl.id,
+                                      value: value,
+                                    };
+                                  } else {
+                                    ad.attributes.push({
+                                      attribute_id: attributeEl.id,
+                                      value: value,
+                                    });
+                                  }
                                   fetchAdverts(ad, true);
                                 }}
                                 placeholder={attributeEl.name}
@@ -318,7 +336,7 @@ export const FilterAdvertsScreen: React.FC<FilterAdvertsScreenProps> = ({
                             <Text style={styles.label}>{attributeEl.name}</Text>
                             <View style={styles.textInputContainer}>
                               <TextInput
-                                style={styles.textInput}
+                                style={[styles.textInput, {width: '95%'}]}
                                 value={
                                   filters.attributes.find(
                                     (el) => attributeEl.id === el.attribute_id,
@@ -366,6 +384,29 @@ export const FilterAdvertsScreen: React.FC<FilterAdvertsScreenProps> = ({
                                   value: JSON.parse(attributeEl?.values)[value]
                                     ?.value,
                                 };
+                                if (
+                                  ad.attributes.findIndex(
+                                    (a) => a.attribute_id === attributeEl.id,
+                                  )
+                                ) {
+                                  ad.attributes[
+                                    ad.attributes.findIndex(
+                                      (a) => a.attribute_id === attributeEl.id,
+                                    )
+                                  ] = {
+                                    attribute_id: attributeEl.id,
+                                    value: JSON.parse(attributeEl?.values)[
+                                      value
+                                    ]?.value,
+                                  };
+                                } else {
+                                  ad.attributes.push({
+                                    attribute_id: attributeEl.id,
+                                    value: JSON.parse(attributeEl?.values)[
+                                      value
+                                    ]?.value,
+                                  });
+                                }
                                 fetchAdverts(ad, true);
                               }}
                               selectedIndex={JSON.parse(
@@ -522,7 +563,7 @@ export const FilterAdvertsScreen: React.FC<FilterAdvertsScreenProps> = ({
           color="dark"
           buttonStyle={styles.btnStyle}
           onPress={() => {
-            SetRecommendations({filters}, true);
+            SetRecommendations(filters, true);
             navigation.navigate({
               name: Routes.SEARCH_ADVERTS_LIST_MODE,
               params: {isFilter: true},
@@ -572,7 +613,7 @@ const styles = EStyleSheet.create({
   },
   textInputContainer: {
     flex: 1,
-    marginHorizontal: rems[20],
+    flexDirection: 'row',
   },
   textInput: {
     height: rems[40],

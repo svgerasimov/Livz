@@ -86,7 +86,6 @@ export const FeedScreen = () => {
     (state) => state.advertisements,
   );
   const {news} = useSelector((state) => state.news);
-  const {token} = useSelector((state) => state.auth);
   const [isNeedPriceModalVisible, setNeedPriceModalVisible] = useState(false);
   const [isBrokerHelpModalVisible, setBrokerHelpModalVisible] = useState(false);
   // const adverts = useTypedSelector(getFilteredAdverts);
@@ -130,7 +129,7 @@ export const FeedScreen = () => {
     fetchMetro();
     fetchNews();
     fetchNotification();
-    SetRecommendations(false);
+    SetRecommendations(null, false);
   }, []);
 
   // const toggleModal = () => {

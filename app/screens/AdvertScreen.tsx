@@ -220,8 +220,7 @@ export const AdvertScreen: React.FC<AdvertScreenProps> = ({
     return <View></View>;
   }
   return (
-    <SafeAreaView
-      style={{flex: 1, paddingTop: 48, backgroundColor: Colors.white}}>
+    <SafeAreaView style={{flex: 1, backgroundColor: Colors.white}}>
       <ScrollView
         showsVerticalScrollIndicator={false}
         bounces={false}
@@ -496,7 +495,7 @@ export const AdvertScreen: React.FC<AdvertScreenProps> = ({
             <View style={[styles.tableRow]}>
               {selectedAdvert.adatributes.map((a) =>
                 a.attribute?.name ? (
-                  <>
+                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
                     <View style={styles.tableRowPropertyWrapper}>
                       <Text style={styles.tableRowProperty}>
                         {a.attribute?.name}
@@ -517,7 +516,7 @@ export const AdvertScreen: React.FC<AdvertScreenProps> = ({
                         </View>
                       )}
                     </View>
-                  </>
+                  </View>
                 ) : null,
               )}
             </View>

@@ -53,10 +53,14 @@ export const SetRecommendations = (
     try {
       let result = [];
       if (isFilters) {
-        apiClinet.post('api/v1/ad/recommendations', {}, {params: parameters});
+        apiClinet.post('api/v1/user/storeRecomendData', parameters, {
+          headers: {Authorization: 'Bearer ' + store.getState().auth.token},
+        });
       } else {
         apiClinet
-          .get('api/v1/ad/recommendations', {params: parameters})
+          .get('api/v1/ad/recomend', {
+            headers: {Authorization: 'Bearer ' + store.getState().auth.token},
+          })
           .then((response) => {
             result = response.data.result.map((value) => {
               return {...value, isFavorite: false, isFilters: isFilters};
@@ -227,6 +231,7 @@ export const UpdateFavorite = (id: any) => {
         })
         .then((_) => {
           console.log(result);
+          dispatch(fetchFavorite());
           dispatch({
             type: ActionType.UPDATE_FAVORITE_SUCCESS,
             payload: result,

@@ -86,13 +86,18 @@ export const SearchAdvertsListScreen: React.FC<SearchAdvertsListScreenProps> = (
 
   useEffect(() => {
     const adsArr = adverts;
-    if (sortingKey === 'price') {
+    if (sortingKey === 'priceDesc') {
       const data = orderBy(adsArr, ['price'], ['desc']);
       setsortedAdverts(data);
       // console.log(arr)
-    } else if (sortingKey === 'area') {
-      const data = orderBy(adsArr, ['area'], ['desc']);
+    } else if (sortingKey === 'priceAsc') {
+      const data = orderBy(adsArr, ['price'], ['asc']);
       setsortedAdverts(data);
+    } else if (sortingKey === 'date') {
+      const data = orderBy(adsArr, ['updatedAt'], ['desc']);
+      setsortedAdverts(data);
+    } else if (sortingKey === 'default') {
+      setsortedAdverts(adsArr);
     }
   }, [sortingKey]);
 
@@ -162,6 +167,7 @@ export const SearchAdvertsListScreen: React.FC<SearchAdvertsListScreenProps> = (
       <Modal
         isVisible={isModalVisible}
         onSwipeComplete={toggleModal}
+        onBackdropPress={toggleModal}
         swipeDirection={['up', 'down']}
         style={styles.view}>
         <View style={styles.content}>
@@ -176,7 +182,7 @@ export const SearchAdvertsListScreen: React.FC<SearchAdvertsListScreenProps> = (
             <TouchableOpacity
               activeOpacity={1}
               onPress={() => {
-                setSortingKey('price');
+                setSortingKey('default');
                 toggleModal();
               }}
               style={{
@@ -188,12 +194,50 @@ export const SearchAdvertsListScreen: React.FC<SearchAdvertsListScreenProps> = (
                 padding: 20,
                 backgroundColor: sortingKey === 'price' ? '#F4F7FB' : 'white',
               }}>
-              <Text style={{fontSize: 15, color: '#4F5154'}}>По стоимости</Text>
+              <Text style={{fontSize: 15, color: '#4F5154'}}>По умолчанию</Text>
             </TouchableOpacity>
             <TouchableOpacity
               activeOpacity={1}
               onPress={() => {
-                setSortingKey('area');
+                setSortingKey('priceDesc');
+                toggleModal();
+              }}
+              style={{
+                borderBottomWidth: 1,
+                borderColor: '#E7EAF0',
+                // height: 55,
+                flexDirection: 'row',
+                alignItems: 'center',
+                padding: 20,
+                backgroundColor: sortingKey === 'price' ? '#F4F7FB' : 'white',
+              }}>
+              <Text style={{fontSize: 15, color: '#4F5154'}}>
+                По убыванию стоимости
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              activeOpacity={1}
+              onPress={() => {
+                setSortingKey('priceAsc');
+                toggleModal();
+              }}
+              style={{
+                borderBottomWidth: 1,
+                borderColor: '#E7EAF0',
+                // height: 55,
+                flexDirection: 'row',
+                alignItems: 'center',
+                padding: 20,
+                backgroundColor: sortingKey === 'price' ? '#F4F7FB' : 'white',
+              }}>
+              <Text style={{fontSize: 15, color: '#4F5154'}}>
+                По возрастанию стоимости
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              activeOpacity={1}
+              onPress={() => {
+                setSortingKey('date');
                 toggleModal();
               }}
               style={{
@@ -205,7 +249,7 @@ export const SearchAdvertsListScreen: React.FC<SearchAdvertsListScreenProps> = (
                 padding: 20,
                 backgroundColor: sortingKey === 'area' ? '#F4F7FB' : 'white',
               }}>
-              <Text style={{fontSize: 15, color: '#4F5154'}}>По площади</Text>
+              <Text style={{fontSize: 15, color: '#4F5154'}}>По дате</Text>
             </TouchableOpacity>
           </View>
         </View>
